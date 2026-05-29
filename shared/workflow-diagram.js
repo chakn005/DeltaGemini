@@ -40,14 +40,22 @@ function connectorLabel(fromId, toId) {
   return from?.handoff || "";
 }
 
+function workflowStageTitle(stepId) {
+  const s = stepById(stepId);
+  if (!s) return stepId;
+  if (stepId === "streaming") return "Streaming";
+  return s.name;
+}
+
 function renderWorkflowStage(stepId, stepNum) {
   const s = stepById(stepId);
   if (!s) return "";
   const st = GEMINI_DATA.statusLabels[s.status] || GEMINI_DATA.statusLabels.pending;
   const deltaCls = s.isNew ? " gemini-delta" : "";
-  return `<div class="wf-stage${deltaCls}" data-step="${escapeHtml(stepId)}">
+  const titleAttr = stepId === "streaming" ? ' title="Disney Streaming"' : "";
+  return `<div class="wf-stage${deltaCls}" data-step="${escapeHtml(stepId)}"${titleAttr}>
     <span class="wf-stage-num">${stepNum}</span>
-    <h3>${escapeHtml(s.name)}</h3>
+    <h3>${escapeHtml(workflowStageTitle(stepId))}</h3>
     <p>${escapeHtml(s.short)}</p>
     <span class="wf-qa-status ${st.class}">${escapeHtml(statusLabel(s.status))}</span>
   </div>`;
@@ -66,7 +74,17 @@ function renderWorkflowMainLane() {
   let stepNum = 1;
   WF_MAIN_LANE.forEach((id, i) => {
     if (i > 0) html += renderWorkflowConnector(WF_MAIN_LANE[i - 1], id);
-    html += renderWorkflowStage(id, stepNum++);
+    if (id === WF_BRANCH_FROM) {
+      html += `<div class="wf-fda-cluster">
+        ${renderWorkflowStage(id, stepNum++)}
+        <div class="wf-branch-rail">
+          <div class="wf-branch-connector" aria-hidden="true"></div>
+          <div class="wf-branch-lane">${renderWorkflowBranches()}</div>
+        </div>
+      </div>`;
+    } else {
+      html += renderWorkflowStage(id, stepNum++);
+    }
   });
   return html;
 }
@@ -140,9 +158,6 @@ function renderWorkflowDiagram(containerId) {
       </div>
       <div class="wf-lane-wrap">
         <div class="wf-main-lane">${renderWorkflowMainLane()}</div>
-        <div class="wf-branch-zone">
-          <div class="wf-branch-lane">${renderWorkflowBranches()}</div>
-        </div>
       </div>
     </div>
     <h3 class="section-title">Stage Requirements</h3>

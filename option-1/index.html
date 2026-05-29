@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Option 1 — Pipeline Studio | Delta Gemini QA</title>
+  <title>Option 1 | Delta Gemini QA</title>
   <style>
     :root {
       --card: var(--disney-surface);
@@ -21,16 +21,39 @@
     .tabs button.active { color: var(--disney-blue); border-bottom-color: var(--accent); font-weight: 600; }
     main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
     .panel { display: none; } .panel.active { display: block; }
-    .flow-rail { display: flex; align-items: flex-start; gap: 0.5rem; overflow-x: auto; padding: 1rem 0; }
-    .flow-node { flex: 0 0 140px; background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 0.85rem; cursor: pointer; transition: box-shadow 0.15s; position: relative; }
-    .flow-node:hover, .flow-node.selected { box-shadow: 0 4px 12px rgba(10, 42, 102, 0.1); border-color: var(--accent); }
-    .flow-node .badge { display: none; }
-    .flow-node h3 { font-size: 0.85rem; margin-bottom: 0.25rem; }
-    .flow-node p { font-size: 0.72rem; color: var(--muted); }
-    .flow-node .st { font-size: 0.7rem; margin-top: 0.4rem; font-weight: 600; }
-    .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; flex-shrink: 0; }
-    .branches { display: flex; gap: 1rem; margin: 0.5rem 0 1rem 280px; }
-    .branch-node { flex: 0 0 120px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; padding: 0.65rem; font-size: 0.75rem; cursor: pointer; }
+    .flow-canvas { overflow-x: auto; padding: 1rem 0; }
+    .flow-main-lane { display: flex; align-items: flex-start; gap: 0.35rem; min-width: min-content; }
+    .flow-node, .flow-branch-node {
+      width: 132px; min-width: 132px; max-width: 132px; min-height: 96px;
+      background: var(--surface); border: 2px solid var(--border); border-radius: 10px;
+      padding: 0.75rem 0.5rem; cursor: pointer; transition: box-shadow 0.15s; text-align: center;
+    }
+    .flow-branch-node { background: #f8fafc; border-style: dashed; min-height: 80px; position: relative; }
+    .flow-node:hover, .flow-node.selected, .flow-branch-node:hover, .flow-branch-node.selected {
+      box-shadow: 0 4px 12px rgba(10, 42, 102, 0.1); border-color: var(--accent);
+    }
+    .flow-node h3, .flow-branch-node h3 { font-size: 0.8rem; margin-bottom: 0.2rem; line-height: 1.2; }
+    .flow-node p, .flow-branch-node p { font-size: 0.68rem; color: var(--muted); line-height: 1.3; }
+    .flow-node .st, .flow-branch-node .st { font-size: 0.65rem; margin-top: 0.35rem; font-weight: 600; }
+    .flow-arrow { align-self: flex-start; color: var(--muted); font-size: 1.1rem; flex-shrink: 0; margin-top: 2.25rem; }
+    .flow-fda-cluster { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .flow-branch-rail { width: 100%; padding-top: 0.35rem; }
+    .flow-branch-connector {
+      position: relative; height: 18px; width: 100%; margin-bottom: 0.15rem;
+    }
+    .flow-branch-connector::before {
+      content: ""; position: absolute; top: 0; left: 50%; width: 2px; height: 10px;
+      background: var(--accent); transform: translateX(-50%);
+    }
+    .flow-branch-connector::after {
+      content: ""; position: absolute; top: 10px; left: 18%; right: 18%; height: 2px;
+      background: var(--accent);
+    }
+    .flow-branches { display: flex; gap: 0.65rem; justify-content: center; }
+    .flow-branch-node::before {
+      content: ""; position: absolute; top: -10px; left: 50%; width: 2px; height: 10px;
+      background: var(--accent); transform: translateX(-50%);
+    }
     .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-top: 1rem; min-height: 120px; }
     .detail-panel h3 { margin-bottom: 0.5rem; color: var(--disney-blue); }
     .detail-panel ul { margin-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
@@ -64,7 +87,7 @@
   <header class="disney-header">
     <div>
       <a class="hub" href="../index.html">← All options</a>
-      <h1>Delta Gemini QA Console — Pipeline Studio</h1>
+      <h1>Delta Gemini QA Console</h1>
       <span>Program: Delta Gemini · Env: Stage · <span id="jira-meta"></span></span>
     </div>
   </header>
@@ -76,8 +99,7 @@
   </nav>
   <main id="app" class="disney-main">
     <section class="panel active" data-panel="flow">
-      <div class="flow-rail" id="flow-rail"></div>
-      <div class="branches" id="branches"></div>
+      <div class="flow-canvas" id="flow-canvas"></div>
       <div class="detail-panel" id="flow-detail"><p style="color:var(--muted)">Select a flow node to view requirements.</p></div>
       <h3 class="cpd-section-title">CPD Application Integrations</h3>
       <p class="cpd-section-sub">Handoff coverage between Rightsline, MD, FDA, CPM, Xavier, Falcon, and Streaming</p>
@@ -111,29 +133,53 @@
     const mainSteps = ["rightsline", "md", "fda", "falcon", "streaming"];
     const branchSteps = ["cpm", "xavier"];
 
+    function flowNodeLabel(step) {
+      if (step.id === "streaming") return "Streaming";
+      return step.name;
+    }
+
+    function renderFlowNode(id, isBranch) {
+      const s = stepById(id);
+      const st = GEMINI_DATA.statusLabels[s.status] || GEMINI_DATA.statusLabels.pending;
+      const cls = isBranch ? "flow-branch-node" : "flow-node";
+      const title = s.id === "streaming" ? ' title="Disney Streaming"' : "";
+      return `<div class="${cls}" data-id="${s.id}"${title}>
+        <h3>${escapeHtml(flowNodeLabel(s))}</h3>
+        <p>${escapeHtml(s.short)}</p>
+        <div class="st ${st.class}">${escapeHtml(statusLabel(s.status))}</div>
+      </div>`;
+    }
+
+    function renderFlowArrow() {
+      return '<span class="flow-arrow" aria-hidden="true">→</span>';
+    }
+
     function renderFlow() {
-      const rail = document.getElementById("flow-rail");
-      rail.innerHTML = mainSteps.map((id, i) => {
-        const s = stepById(id);
-        const st = GEMINI_DATA.statusLabels[s.status] || GEMINI_DATA.statusLabels.pending;
-        return `${i ? '<span class="arrow">→</span>' : ""}
-          <div class="flow-node" data-id="${s.id}">
-            <h3>${escapeHtml(s.name)}</h3>
-            <p>${escapeHtml(s.short)}</p>
-            <div class="st ${st.class}">${escapeHtml(statusLabel(s.status))}</div>
-          </div>`;
-      }).join("");
-      document.getElementById("branches").innerHTML = branchSteps.map((id) => {
-        const s = stepById(id);
-        return `<div class="branch-node" data-id="${s.id}">↳ ${escapeHtml(s.name)}<br><small>${escapeHtml(s.short)}</small></div>`;
-      }).join("");
-      document.querySelectorAll(".flow-node, .branch-node").forEach((el) => {
+      const lane = [];
+      mainSteps.forEach((id, i) => {
+        if (i > 0) lane.push(renderFlowArrow());
+        if (id === "fda") {
+          lane.push(`<div class="flow-fda-cluster">
+            ${renderFlowNode("fda", false)}
+            <div class="flow-branch-rail">
+              <div class="flow-branch-connector" aria-hidden="true"></div>
+              <div class="flow-branches">
+                ${branchSteps.map((bid) => renderFlowNode(bid, true)).join("")}
+              </div>
+            </div>
+          </div>`);
+        } else {
+          lane.push(renderFlowNode(id, false));
+        }
+      });
+      document.getElementById("flow-canvas").innerHTML = `<div class="flow-main-lane">${lane.join("")}</div>`;
+      document.querySelectorAll(".flow-node, .flow-branch-node").forEach((el) => {
         el.addEventListener("click", () => showDetail(el.dataset.id, el));
       });
     }
 
     function showDetail(id, el) {
-      document.querySelectorAll(".flow-node, .branch-node").forEach((n) => n.classList.remove("selected"));
+      document.querySelectorAll(".flow-node, .flow-branch-node").forEach((n) => n.classList.remove("selected"));
       if (el) el.classList.add("selected");
       const s = stepById(id);
       document.getElementById("flow-detail").innerHTML = `
