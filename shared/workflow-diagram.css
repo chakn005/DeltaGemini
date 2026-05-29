@@ -1,0 +1,291 @@
+/* Structured Delta Gemini workflow diagram (PDF layout) */
+
+.wf-diagram {
+  background: var(--disney-surface);
+  border: 1px solid var(--disney-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.wf-diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--disney-border);
+}
+
+.wf-diagram-header h2 {
+  font-size: 1.05rem;
+  color: var(--disney-blue);
+  margin: 0 0 0.35rem;
+}
+
+.wf-diagram-header p {
+  font-size: 0.85rem;
+  color: var(--disney-muted);
+  margin: 0;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.wf-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--disney-muted);
+}
+
+.wf-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 2px solid var(--disney-red);
+  background: var(--disney-red-soft);
+  flex-shrink: 0;
+}
+
+.wf-lane-wrap {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.wf-main-lane {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: min(100%, 900px);
+}
+
+.wf-stage {
+  flex: 1 1 0;
+  min-width: 118px;
+  background: var(--disney-blue-soft);
+  border: 2px solid var(--disney-border);
+  border-radius: 10px;
+  padding: 0.85rem 0.65rem;
+  text-align: center;
+  position: relative;
+}
+
+.wf-stage.gemini-delta {
+  border-color: var(--disney-red);
+  background: var(--disney-red-soft);
+}
+
+.wf-stage-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--disney-blue);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.wf-stage.gemini-delta .wf-stage-num {
+  background: var(--disney-red);
+}
+
+.wf-stage h3 {
+  font-size: 0.82rem;
+  color: var(--disney-blue);
+  margin: 0 0 0.2rem;
+  line-height: 1.25;
+}
+
+.wf-stage p {
+  font-size: 0.68rem;
+  color: var(--disney-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.wf-stage .wf-qa-status {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.wf-connector {
+  flex: 0 0 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.15rem;
+  min-width: 72px;
+}
+
+.wf-connector-line {
+  width: 100%;
+  height: 2px;
+  background: var(--disney-blue-mid);
+  position: relative;
+}
+
+.wf-connector-line::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left-color: var(--disney-blue-mid);
+}
+
+.wf-connector-label {
+  font-size: 0.58rem;
+  color: var(--disney-muted);
+  text-align: center;
+  line-height: 1.25;
+  margin-top: 0.35rem;
+  max-width: 72px;
+}
+
+.wf-branch-zone {
+  position: relative;
+  margin: 0.75rem 0 0.5rem;
+  padding-top: 1.5rem;
+  min-height: 100px;
+}
+
+.wf-branch-zone::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28%;
+  width: 2px;
+  height: 1.25rem;
+  background: var(--disney-blue-mid);
+}
+
+.wf-branch-lane {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-left: 18%;
+}
+
+.wf-branch {
+  flex: 0 0 140px;
+  background: #f8fafc;
+  border: 2px dashed var(--disney-border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+  position: relative;
+}
+
+.wf-branch::before {
+  content: "";
+  position: absolute;
+  top: -1.35rem;
+  left: 50%;
+  width: 2px;
+  height: 1.35rem;
+  background: var(--disney-blue-mid);
+  transform: translateX(-50%);
+}
+
+.wf-branch h4 {
+  font-size: 0.78rem;
+  color: var(--disney-blue);
+  margin: 0 0 0.2rem;
+}
+
+.wf-branch p {
+  font-size: 0.65rem;
+  color: var(--disney-muted);
+  margin: 0;
+}
+
+.wf-branch.gemini-delta {
+  border-color: var(--disney-red);
+  border-style: solid;
+  background: var(--disney-red-soft);
+}
+
+.wf-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.wf-detail-card {
+  background: var(--disney-surface);
+  border: 1px solid var(--disney-border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  border-left: 4px solid var(--disney-blue-mid);
+}
+
+.wf-detail-card.gemini-delta {
+  border-left-color: var(--disney-red);
+}
+
+.wf-detail-card h3 {
+  font-size: 0.92rem;
+  color: var(--disney-blue);
+  margin: 0 0 0.35rem;
+}
+
+.wf-detail-card .wf-detail-sub {
+  font-size: 0.78rem;
+  color: var(--disney-muted);
+  margin-bottom: 0.65rem;
+  line-height: 1.45;
+}
+
+.wf-detail-card ol {
+  margin: 0 0 0.65rem 1.15rem;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--disney-text);
+  line-height: 1.55;
+}
+
+.wf-detail-card .wf-handoff-out {
+  font-size: 0.75rem;
+  color: var(--disney-muted);
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--disney-border);
+}
+
+.wf-handoffs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.wf-handoffs-table th,
+.wf-handoffs-table td {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--disney-border);
+  text-align: left;
+}
+
+.wf-handoffs-table th {
+  background: var(--disney-blue-soft);
+  color: var(--disney-blue);
+  font-weight: 600;
+}
+
+@media (max-width: 800px) {
+  .wf-main-lane { min-width: 720px; }
+  .wf-connector { flex-basis: 56px; min-width: 56px; }
+  .wf-connector-label { font-size: 0.55rem; max-width: 56px; }
+}

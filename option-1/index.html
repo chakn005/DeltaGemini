@@ -58,6 +58,7 @@
   <link rel="stylesheet" href="../shared/option-layout.css">
   <link rel="stylesheet" href="../shared/integration.css">
   <link rel="stylesheet" href="../shared/jira.css">
+  <link rel="stylesheet" href="../shared/workflow-diagram.css">
 </head>
 <body>
   <header class="disney-header">
@@ -69,6 +70,7 @@
   </header>
   <nav class="tabs disney-tabs" id="tabs">
     <button class="active" data-tab="flow">E2E Flow</button>
+    <button data-tab="diagram">Workflow Diagram</button>
     <button data-tab="qa">QA &amp; Coverage</button>
     <button data-tab="ops">Business Ops</button>
   </nav>
@@ -81,6 +83,9 @@
       <p class="cpd-section-sub">Handoff coverage between Rightsline, MD, FDA, CPM, Xavier, Falcon, and Streaming</p>
       <div class="cpd-int-grid" id="flow-integrations"></div>
       <div class="cpd-int-detail" id="flow-int-detail"></div>
+    </section>
+    <section class="panel" data-panel="diagram">
+      <div id="workflow-diagram"></div>
     </section>
     <section class="panel" data-panel="qa">
       <div class="kpi-row" id="kpis"></div>
@@ -101,6 +106,7 @@
   <script src="../shared/metrics.js"></script>
   <script src="../shared/matrix-store.js"></script>
   <script src="../shared/integration.js"></script>
+  <script src="../shared/workflow-diagram.js"></script>
   <script>
     const mainSteps = ["rightsline", "md", "fda", "falcon", "streaming"];
     const branchSteps = ["cpm", "xavier"];
@@ -185,7 +191,7 @@
           document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === btn.dataset.tab));
         });
       });
-      renderFlow(); renderIntegrations(); renderQA(); renderOps();
+      renderFlow(); renderIntegrations(); renderWorkflowDiagram("workflow-diagram"); renderQA(); renderOps();
       document.getElementById("jira-meta").innerHTML = GEMINI_DATA.testPlans.map((p) => jiraLink(p.id, p.id)).join(" · ");
       showDetail("fda", document.querySelector('[data-id="fda"]'));
     });
