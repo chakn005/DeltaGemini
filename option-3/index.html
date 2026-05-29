@@ -141,7 +141,7 @@
       renderQAExecutionSummary("exec-kpis");
       renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("plan-list").innerHTML = GEMINI_DATA.testPlans.map((p, i) =>
-        `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem"><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span> · ${p.coverage}% · ${escapeHtml(p.jiraStatus || "")}</div><div class="plan-item-bar">${renderPlanProgressBar(p)}</div>${renderPlanExecutionBar(p)}<div class="exec-stats" style="margin-top:0.35rem;font-size:0.75rem"><span class="exec-stat pass">${p.pass} Passed</span><span class="exec-stat fail">${p.fail} Failed</span><span class="exec-stat blocked">${p.blocked} Blocked</span></div></div>`).join("");
+        `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem"><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span> · ${p.coverage}% · ${escapeHtml(p.jiraStatus || "")}</div>${renderPlanExecutionBar(p)}<div class="exec-stats" style="margin-top:0.35rem;font-size:0.75rem"><span class="exec-stat pass">${p.pass} Passed</span><span class="exec-stat fail">${p.fail} Failed</span><span class="exec-stat blocked">${p.blocked} Blocked</span></div></div>`).join("");
       document.querySelectorAll(".plan-item").forEach((el) => el.addEventListener("click", () => {
         document.querySelectorAll(".plan-item").forEach((p) => p.classList.remove("active"));
         el.classList.add("active");
@@ -160,7 +160,6 @@
           <div class="donut ${planBarStatus(p)}" style="${planDonutStyle(p)}" data-pct="${p.coverage}%"></div>
           <div><h3>${escapeHtml(p.name)}</h3><p style="color:var(--muted);font-size:0.85rem">${jiraLink(p.id, p.id)} · ${escapeHtml(p.owner)} · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></p></div>
         </div>
-        ${renderPlanProgressBar(p)}
         ${renderPlanExecutionBar(p)}
         ${renderPlanExecutionStats(p)}
         <table class="step-table"><tr><th>Application</th><th>Status</th></tr>

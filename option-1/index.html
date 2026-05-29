@@ -200,7 +200,6 @@
         <div class="plan-card">
           <h3>${escapeHtml(p.name)}</h3>
           <div class="id">${jiraLink(p.id, p.id)}${p.jiraStatus ? ` <span class="jira-status-pill">${escapeHtml(p.jiraStatus)}</span>` : ""} · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>
-          ${renderPlanProgressBar(p)}
           ${renderPlanExecutionBar(p)}
           ${renderPlanExecutionStats(p)}
           <p style="font-size:0.8rem;color:var(--muted);margin-top:0.35rem">Coverage ${p.coverage}% · Total ${p.total} executions</p>
