@@ -100,6 +100,58 @@ body {
   color: var(--disney-blue);
 }
 
+.exec-summary {
+  margin-bottom: 1.25rem;
+}
+
+.exec-summary-title {
+  font-size: 0.95rem;
+  color: var(--disney-blue);
+  margin-bottom: 0.65rem;
+}
+
+.exec-kpi-row {
+  margin-bottom: 0;
+}
+
+.exec-kpi.pass .val { color: var(--disney-completed); }
+.exec-kpi.fail .val { color: var(--disney-red); }
+.exec-kpi.blocked .val { color: var(--disney-progress); }
+
+.exec-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.exec-stat.pass { color: var(--disney-completed); }
+.exec-stat.fail { color: var(--disney-red); }
+.exec-stat.blocked { color: var(--disney-progress); }
+
+.exec-stat strong {
+  font-weight: 700;
+}
+
+.exec-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--disney-pending-bg);
+  margin: 0.5rem 0;
+}
+
+.exec-bar-pass { background: var(--disney-completed); }
+.exec-bar-fail { background: var(--disney-red); }
+.exec-bar-blocked { background: var(--disney-progress); }
+.exec-bar-pending { background: var(--disney-pending-bg); }
+
+.exec-col-pass { color: var(--disney-completed); font-weight: 600; }
+.exec-col-fail { color: var(--disney-red); font-weight: 600; }
+.exec-col-blocked { color: var(--disney-progress); font-weight: 600; }
+
 #int-matrix,
 #app-matrix {
   padding: 0.75rem;

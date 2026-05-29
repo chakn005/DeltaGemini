@@ -57,6 +57,7 @@
       <div class="flow-diagram" id="int-diagram"></div>
     </section>
     <section class="panel scorecard" data-panel="qa">
+      <div id="exec-kpis"></div>
       <div class="readiness" id="readiness"></div>
       <table class="score-table" id="plan-table"></table>
       <h3 class="section-title">CPD Integration Coverage</h3>
@@ -101,13 +102,14 @@
     }
 
     function renderQA() {
+      renderQAExecutionSummary("exec-kpis");
       renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       const cov = overallCoverage();
       const readiness = cov >= 70 ? "Ready" : cov >= 40 ? "At Risk" : "Not Started";
       const rColor = cov >= 70 ? "var(--completed)" : cov >= 40 ? "var(--progress)" : "var(--pending)";
-      document.getElementById("readiness").innerHTML = `<div class="status" style="color:${rColor}">${readiness}</div><p>Application QA: ${cov}% · Integration QA: ${overallIntegrationCoverage()}% · ${totalBlockers()} open blockers · Env: ${GEMINI_DATA.env}</p>`;
-      document.getElementById("plan-table").innerHTML = `<tr><th>Test Plan</th><th>Jira</th><th>Status</th><th>Coverage</th><th>Pass/Fail/Blocked</th></tr>
-        ${GEMINI_DATA.testPlans.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${jiraLink(p.id, p.id)}</td><td><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></td><td class="coverage-cell-bar">${p.coverage}%${renderPlanProgressBar(p)}</td><td>${p.pass}/${p.fail}/${p.blocked} (total ${p.total})</td></tr>`).join("")}`;
+      document.getElementById("readiness").innerHTML = `<div class="status" style="color:${rColor}">${readiness}</div><p>Application QA: ${cov}% · Integration QA: ${overallIntegrationCoverage()}% · <span class="exec-col-pass">Passed ${totalPass()}</span> · <span class="exec-col-fail">Failed ${totalFailed()}</span> · <span class="exec-col-blocked">Blocked ${totalBlocked()}</span> · Env: ${GEMINI_DATA.env}</p>`;
+      document.getElementById("plan-table").innerHTML = `<tr><th>Test Plan</th><th>Jira</th><th>Status</th><th>Coverage</th><th>Passed</th><th>Failed</th><th>Blocked</th><th>Total</th></tr>
+        ${GEMINI_DATA.testPlans.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${jiraLink(p.id, p.id)}</td><td><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></td><td class="coverage-cell-bar">${p.coverage}%${renderPlanProgressBar(p)}${renderPlanExecutionBar(p)}</td><td class="exec-col-pass">${p.pass}</td><td class="exec-col-fail">${p.fail}</td><td class="exec-col-blocked">${p.blocked}</td><td>${p.total}</td></tr>`).join("")}`;
       document.getElementById("int-table").innerHTML = `<tr><th>Integration</th><th>Payload</th><th>Status</th><th>Coverage</th><th>Plan</th></tr>
         ${GEMINI_DATA.cpdIntegrations.map((int) => `<tr><td>${escapeHtml(integrationLabel(int))}</td><td>${escapeHtml(int.payload)}</td><td>${statusLabel(int.status)}</td><td>${int.coverage}%</td><td>${jiraLink(int.testPlan, int.testPlan)}</td></tr>`).join("")}`;
     }
