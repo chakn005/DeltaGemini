@@ -3,3 +3,10 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Local-only UI prototypes (Option 1 is published to GitHub Pages)
+option-2/
+option-3/
+option-4/
+option-5/
+index-local.html
