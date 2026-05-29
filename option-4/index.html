@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 4 — Board + Brief | Delta Gemini QA</title>
+  <style>
+    :root { --blue: var(--disney-blue-mid); --blue-light: var(--disney-blue-soft); --blocked: var(--disney-red); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    header { background: var(--disney-blue); color: #fff; padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; border-bottom: none; }
+    header::after { display: none; }
+    header h1 { font-size: 1.1rem; font-weight: 600; color: #fff; }
+    .hub { color: rgba(255,255,255,0.9); font-size: 0.8rem; text-decoration: none; display: block; }
+    .ticket-pills span { background: rgba(255,255,255,0.15); color: #fff; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.35rem; }
+    .ticket-pills a { color: #fff; }
+    .disney-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: var(--disney-blue); }
+    main { padding: 1.25rem; max-width: 1200px; margin: 0 auto; }
+    .panel { display: none; } .panel.active { display: block; }
+    .storyboard { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .story-card { flex: 0 0 200px; background: var(--surface); border-radius: 10px; box-shadow: 0 1px 3px rgba(10, 42, 102, 0.08); padding: 1rem; cursor: pointer; border: 1px solid var(--border); border-top: 4px solid var(--disney-blue-mid); }
+    .story-card h3 { font-size: 0.95rem; margin-bottom: 0.35rem; color: var(--disney-blue); }
+    .story-card ul { font-size: 0.75rem; color: var(--muted); margin-left: 1rem; line-height: 1.5; }
+    .story-card .badge { display: none; }
+    .handoff { text-align: center; color: var(--muted); font-size: 0.75rem; margin: 0.75rem 0; }
+    .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; min-height: 360px; }
+    .col { background: var(--disney-blue-soft); border-radius: 10px; padding: 0.65rem; border: 1px solid var(--border); }
+    .col h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--disney-blue); margin-bottom: 0.65rem; padding: 0 0.25rem; font-weight: 700; }
+    .k-card { background: var(--surface); border-radius: 8px; padding: 0.65rem; margin-bottom: 0.5rem; box-shadow: 0 1px 2px rgba(10, 42, 102, 0.06); font-size: 0.8rem; border: 1px solid var(--border); }
+    .k-card .tag { display: inline-block; font-size: 0.65rem; padding: 0.1rem 0.35rem; border-radius: 3px; margin-top: 0.35rem; margin-right: 0.25rem; }
+    .tag-fda { background: var(--blue-light); color: var(--disney-blue); }
+    .tag-falcon { background: var(--disney-completed-bg); color: var(--completed); }
+    .coverage-bar { background: var(--surface); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1rem; display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; box-shadow: 0 1px 3px rgba(10, 42, 102, 0.06); border: 1px solid var(--border); }
+    .coverage-bar .stat { font-size: 0.85rem; }
+    .coverage-bar strong { color: var(--disney-blue); font-size: 1.1rem; }
+    .brief { background: var(--surface); border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(10, 42, 102, 0.06); line-height: 1.65; border: 1px solid var(--border); }
+    .brief h2 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--disney-blue); }
+    .brief h3 { font-size: 0.95rem; margin: 1.25rem 0 0.5rem; color: var(--disney-blue); }
+    .brief p, .brief li { font-size: 0.9rem; color: var(--muted); }
+    .brief ul { margin-left: 1.25rem; }
+    .owner-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.5rem; }
+    .owner-table th, .owner-table td { padding: 0.5rem; border: 1px solid var(--border); text-align: left; }
+    .owner-table th { background: var(--disney-blue-soft); color: var(--disney-blue); }
+    @media (max-width: 900px) { .kanban { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .kanban { grid-template-columns: 1fr; } }
+  </style>
+  <link rel="stylesheet" href="../shared/disney-theme.css">
+  <link rel="stylesheet" href="../shared/option-layout.css">
+  <link rel="stylesheet" href="../shared/integration.css">
+  <link rel="stylesheet" href="../shared/jira.css">
+</head>
+<body>
+  <header class="disney-header">
+    <div>
+      <a class="hub" href="../index.html">← All options</a>
+      <h1>Delta Gemini QA Board</h1>
+    </div>
+    <div class="ticket-pills" id="ticket-pills"></div>
+  </header>
+  <nav class="disney-tabs" id="tabs">
+    <button class="active" data-tab="flow">E2E Flow</button>
+    <button data-tab="qa">QA &amp; Coverage</button>
+    <button data-tab="ops">Business Ops</button>
+  </nav>
+  <main class="disney-main" id="app">
+    <section class="panel active" data-panel="flow">
+      <div class="storyboard" id="storyboard"></div>
+      <div class="handoff">Scroll → · Click card for handoff details</div>
+      <div class="brief" id="flow-detail" style="margin-top:0.5rem"><p>Select a system card above.</p></div>
+      <h3 class="cpd-section-title">CPD Integration Handoffs</h3>
+      <div class="cpd-int-grid" id="flow-integrations"></div>
+      <div class="cpd-int-detail" id="flow-int-detail"></div>
+    </section>
+    <section class="panel" data-panel="qa">
+      <div class="coverage-bar" id="cov-bar"></div>
+      <h3 class="cpd-section-title">CPD Integration Coverage</h3>
+      <div class="cpd-int-kpi-row" id="int-kpis" style="margin-bottom:1rem"></div>
+      <h3 class="section-title">CPD Integration Coverage Matrix</h3>
+      <div id="int-matrix"></div>
+      <h3 class="section-title">Application Coverage — Step × QA Type</h3>
+      <div class="matrix-wrap" style="margin-bottom:1rem"><table class="matrix" id="app-matrix"></table></div>
+      <h3 class="cpd-section-title">QA Workboard</h3>
+      <div class="kanban" id="kanban"></div>
+    </section>
+    <section class="panel" data-panel="ops">
+      <div class="brief" id="brief"></div>
+    </section>
+  </main>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="../shared/jira.js"></script>
+  <script src="../shared/metrics.js"></script>
+  <script src="../shared/matrix-store.js"></script>
+  <script src="../shared/integration.js"></script>
+  <script>
+    const storyOrder = ["rightsline", "md", "fda", "falcon", "streaming"];
+
+    function renderStoryboard() {
+      document.getElementById("storyboard").innerHTML = storyOrder.map((id) => {
+        const s = stepById(id);
+        return `<div class="story-card" data-id="${id}">
+          <h3>${escapeHtml(s.name)}</h3>
+          <ul>${s.requirements.slice(0, 3).map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>
+        </div>`;
+      }).join("");
+      document.querySelectorAll(".story-card").forEach((el) => {
+        el.addEventListener("click", () => {
+          const s = stepById(el.dataset.id);
+          document.getElementById("flow-detail").innerHTML = `<h2>${escapeHtml(s.name)} Handoff</h2><p><strong>Status:</strong> ${GEMINI_DATA.statusLabels[s.status].label}</p><p><strong>Handoff:</strong> ${escapeHtml(s.handoff || "—")}</p><h3>Requirements</h3><ul>${s.requirements.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>`;
+        });
+      });
+    }
+
+    function renderIntegrations() {
+      const grid = document.getElementById("flow-integrations");
+      grid.innerHTML = renderIntegrationCards();
+      bindIntegrationCards(grid, document.getElementById("flow-int-detail"));
+    }
+
+    function renderKanban() {
+      document.getElementById("cov-bar").innerHTML = `
+        <div class="stat">App coverage: <strong>${overallCoverage()}%</strong></div>
+        <div class="stat">Integration coverage: <strong>${overallIntegrationCoverage()}%</strong></div>
+        ${GEMINI_DATA.testPlans.map((p) => `<div class="stat">${escapeHtml(p.id)}: <strong>${p.coverage}%</strong></div>`).join("")}
+        <div class="stat">Blockers: <strong>${totalBlockers()}</strong></div>`;
+      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
+      document.getElementById("app-matrix").innerHTML = renderApplicationMatrixTable();
+      const cols = [
+        { key: "backlog", title: "Backlog", cls: "backlog" },
+        { key: "inTest", title: "In Test", cls: "intest" },
+        { key: "blocked", title: "Blocked", cls: "blocked" },
+        { key: "done", title: "Done", cls: "done" }
+      ];
+      document.getElementById("kanban").innerHTML = cols.map((col) => `
+        <div class="col ${col.cls}"><h4>${col.title}</h4>
+        ${(GEMINI_DATA.kanban[col.key] || []).map((c) => `
+          <div class="k-card">${jiraLink(c.ticket || c.title, c.title)}
+          <div><span class="tag tag-${(c.plan || "").toLowerCase()}">${escapeHtml(c.plan || "—")}</span>${c.jiraStatus ? `<span class="tag" style="background:var(--disney-blue-soft)">${escapeHtml(c.jiraStatus)}</span>` : ""}</div>
+          </div>`).join("")}
+        </div>`).join("");
+    }
+
+    function renderBrief() {
+      document.getElementById("brief").innerHTML = `
+        <h2>Operational Brief — Delta Gemini</h2>
+        <p>Content migration for Hulu licensee requires seamless integration across Rightsline, MD, FDA, Falcon, and Disney Streaming. QA validates handoffs, Gemini deltas, and end-to-end data integrity.</p>
+        <h3>Example Titles</h3>
+        <ul>${GEMINI_DATA.examples.map((e) => `<li><strong>${escapeHtml(e.title)}</strong> (${escapeHtml(e.type)}) — ${escapeHtml(e.details)}</li>`).join("")}</ul>
+        <h3>Handoff Ownership</h3>
+        <table class="owner-table"><tr><th>System</th><th>Owner</th></tr>
+        ${GEMINI_DATA.contacts.map((c) => `<tr><td>${escapeHtml(c.system)}</td><td>${escapeHtml(c.owners)}</td></tr>`).join("")}
+        </table>
+        <h3>Environment &amp; Dependencies</h3>
+        <ul>
+          <li>Environment: ${escapeHtml(GEMINI_DATA.env)}</li>
+          <li>FDA Test Plan: ${jiraLink(GEMINI_DATA.testPlans[0].id, GEMINI_DATA.testPlans[0].id)} — covers MD, FDA, CPM, Xavier</li>
+          <li>Falcon Test Plan: ${jiraLink(GEMINI_DATA.testPlans[1].id, GEMINI_DATA.testPlans[1].id)} — covers Falcon, Kafka, Streaming</li>
+        </ul>
+        <h3>CPD Integration Handoffs</h3>
+        <table class="owner-table"><tr><th>Integration</th><th>Owner</th><th>Coverage</th></tr>
+        ${GEMINI_DATA.cpdIntegrations.map((int) => `<tr><td>${escapeHtml(integrationLabel(int))} — ${escapeHtml(int.label)}</td><td>${escapeHtml(int.owner)}</td><td>${int.coverage}%</td></tr>`).join("")}
+        </table>
+        <h3>Risks</h3>
+        <ul>${GEMINI_DATA.risks.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>`;
+    }
+
+    document.getElementById("tabs").querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b === btn));
+        document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === btn.dataset.tab));
+      });
+    });
+    bootConsole(() => {
+      renderStoryboard();
+      renderIntegrations();
+      renderKanban();
+      renderBrief();
+      document.getElementById("ticket-pills").innerHTML = GEMINI_DATA.testPlans.map((p) => `<span>${jiraLink(p.id, p.id)}</span>`).join("");
+      document.querySelector(".story-card")?.click();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+.jira-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.jira-link:hover {
+  opacity: 0.85;
+}
+.jira-meta {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin-top: 0.75rem;
+}
+.jira-meta a {
+  color: inherit;
+}
+.jira-status-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+  margin-left: 0.35rem;
+}

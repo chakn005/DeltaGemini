@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 3 — Split Navigator | Delta Gemini QA</title>
+  <style>
+    :root { --primary: var(--disney-blue-mid); --primary-light: var(--disney-blue-soft); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    header { background: var(--surface); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .hub { color: var(--accent); font-size: 0.8rem; text-decoration: none; }
+    header h1 { font-size: 1.2rem; margin-top: 0.25rem; color: var(--disney-blue); }
+    .tabs { display: flex; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .tabs button { border: none; background: var(--bg); color: var(--muted); padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer; font-size: 0.85rem; font-family: inherit; }
+    .tabs button.active { background: var(--disney-blue); color: #fff; }
+    main { max-width: 1200px; margin: 0 auto; padding: 1.25rem; }
+    .panel { display: none; } .panel.active { display: block; }
+    .breadcrumb { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+    .flow-map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+    .map-node { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .map-node.dim { opacity: 0.35; }
+    .map-node.highlight { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); opacity: 1; }
+    .map-node h4 { font-size: 0.85rem; color: var(--disney-blue); }
+    .map-node small { color: var(--muted); font-size: 0.7rem; }
+    .map-branches { display: flex; justify-content: center; gap: 2rem; margin: -0.5rem 0 1rem; }
+    .timeline { display: flex; gap: 0.25rem; overflow-x: auto; padding: 0.75rem 0; }
+    .tl-step { flex: 0 0 auto; font-size: 0.7rem; padding: 0.35rem 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; white-space: nowrap; }
+    .tl-step.active { background: var(--accent-soft); border-color: var(--accent); color: var(--disney-blue); font-weight: 600; }
+    .split { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; min-height: 420px; }
+    .plan-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .plan-item { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 1rem; cursor: pointer; }
+    .plan-item.active { border-color: var(--accent); background: var(--accent-soft); }
+    .plan-item .id { font-weight: 700; color: var(--disney-blue); font-size: 0.9rem; }
+    .coverage-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .donut-wrap { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem; }
+    .donut { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--disney-blue-mid) 0deg, var(--disney-blue-mid) calc(var(--pct) * 3.6deg), var(--pending) calc(var(--pct) * 3.6deg)); display: flex; align-items: center; justify-content: center; }
+    .donut::after { content: attr(data-pct); width: 56px; height: 56px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--disney-blue); }
+    .step-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
+    .step-table th, .step-table td { padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: left; }
+    .step-table th { color: var(--disney-blue); background: var(--accent-soft); }
+    .ops-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ops-col { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .ops-col h3 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--disney-blue); }
+    .narrative { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .narrative:last-child { border: none; }
+    .delta-box { background: var(--red-light); border-left: 3px solid var(--red); padding: 0.5rem 0.75rem; margin-top: 0.35rem; font-size: 0.8rem; color: #991b1b; }
+    .compare { width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-top: 1rem; }
+    .compare th, .compare td { padding: 0.45rem; border: 1px solid var(--border); }
+    @media (max-width: 800px) { .split, .ops-cols, .flow-map { grid-template-columns: 1fr; } .flow-map { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+  <link rel="stylesheet" href="../shared/disney-theme.css">
+  <link rel="stylesheet" href="../shared/option-layout.css">
+  <link rel="stylesheet" href="../shared/integration.css">
+  <link rel="stylesheet" href="../shared/jira.css">
+</head>
+<body>
+  <header class="disney-header">
+    <a class="hub" href="../index.html">← All options</a>
+    <h1>Delta Gemini QA Console — Split Navigator</h1>
+    <div class="jira-meta" id="jira-meta"></div>
+  </header>
+  <nav class="tabs disney-tabs" id="tabs">
+    <button class="active" data-tab="flow">E2E Flow</button>
+    <button data-tab="qa">QA &amp; Coverage</button>
+    <button data-tab="ops">Business Ops</button>
+  </nav>
+  <main id="app" class="disney-main">
+    <section class="panel active" data-panel="flow">
+      <div class="breadcrumb" id="breadcrumb">Rightsline › MD › FDA › Falcon › Streaming</div>
+      <div class="flow-map" id="flow-map"></div>
+      <div class="map-branches" id="map-branches"></div>
+      <div class="timeline" id="timeline"></div>
+      <div class="coverage-panel" id="flow-info"></div>
+      <h3 class="cpd-section-title">CPD Application Integrations</h3>
+      <div class="cpd-int-grid" id="flow-integrations"></div>
+      <div class="cpd-int-detail" id="flow-int-detail"></div>
+    </section>
+    <section class="panel" data-panel="qa">
+      <div class="split">
+        <div class="plan-list" id="plan-list"></div>
+        <div class="coverage-panel" id="coverage-detail"></div>
+      </div>
+      <h3 class="cpd-section-title" style="margin-top:1.25rem">CPD Integration Coverage Matrix</h3>
+      <div class="cpd-int-kpi-row" id="int-kpis"></div>
+      <div class="coverage-panel" style="overflow-x:auto"><div id="int-matrix"></div></div>
+    </section>
+    <section class="panel" data-panel="ops">
+      <div class="ops-cols">
+        <div class="ops-col" id="ops-left"></div>
+        <div class="ops-col" id="ops-right"></div>
+      </div>
+      <table class="compare" id="compare"></table>
+    </section>
+  </main>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="../shared/jira.js"></script>
+  <script src="../shared/metrics.js"></script>
+  <script src="../shared/matrix-store.js"></script>
+  <script src="../shared/integration.js"></script>
+  <script>
+    const mainIds = ["rightsline", "md", "fda", "falcon", "streaming"];
+    let selectedPlan = GEMINI_DATA.testPlans[0];
+    let selectedStep = "fda";
+
+    function renderFlowMap(highlightIds) {
+      const set = new Set(highlightIds || []);
+      document.getElementById("flow-map").innerHTML = mainIds.map((id) => {
+        const s = stepById(id);
+        const cls = [set.size && !set.has(id) ? "dim" : "", set.has(id) ? "highlight" : ""].filter(Boolean).join(" ");
+        return `<div class="map-node ${cls}" data-id="${id}"><h4>${escapeHtml(s.name)}</h4><small>${escapeHtml(statusLabel(s.status))}</small></div>`;
+      }).join("");
+      document.getElementById("map-branches").innerHTML = ["cpm", "xavier"].map((id) => {
+        const s = stepById(id);
+        const cls = [set.size && !set.has(id) ? "dim" : "", set.has(id) ? "highlight" : ""].filter(Boolean).join(" ");
+        return `<div class="map-node ${cls}" data-id="${id}" style="flex:0 0 120px"><h4>${escapeHtml(s.name)}</h4><small>from FDA</small></div>`;
+      }).join("");
+      document.querySelectorAll(".map-node").forEach((el) => el.addEventListener("click", () => selectStep(el.dataset.id)));
+    }
+
+    function selectStep(id) {
+      selectedStep = id;
+      const s = stepById(id);
+      const chain = mainIds.slice(0, mainIds.indexOf(id) + 1).map((i) => stepById(i).name);
+      if (id === "cpm" || id === "xavier") chain.push(s.name);
+      document.getElementById("breadcrumb").textContent = chain.join(" › ");
+      document.getElementById("flow-info").innerHTML = `<h3 style="margin-bottom:0.5rem">${escapeHtml(s.name)}</h3><ul style="margin-left:1.25rem;color:var(--muted);line-height:1.6">${s.requirements.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>`;
+      document.querySelectorAll(".tl-step").forEach((t) => t.classList.toggle("active", t.dataset.id === id));
+    }
+
+    function renderTimeline() {
+      document.getElementById("timeline").innerHTML = GEMINI_DATA.flowSteps.map((s) =>
+        `<span class="tl-step" data-id="${s.id}">${escapeHtml(s.name)}</span>`).join("");
+      document.querySelectorAll(".tl-step").forEach((el) => el.addEventListener("click", () => { renderFlowMap(); selectStep(el.dataset.id); }));
+    }
+
+    function renderQA() {
+      document.getElementById("plan-list").innerHTML = GEMINI_DATA.testPlans.map((p, i) =>
+        `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem">${p.coverage}% coverage · ${escapeHtml(p.jiraStatus || "")}</div></div>`).join("");
+      document.querySelectorAll(".plan-item").forEach((el) => el.addEventListener("click", () => {
+        document.querySelectorAll(".plan-item").forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        selectedPlan = GEMINI_DATA.testPlans[+el.dataset.idx];
+        renderPlanDetail();
+        renderFlowMap(selectedPlan.steps);
+      }));
+      renderPlanDetail();
+    }
+
+    function renderPlanDetail() {
+      const p = selectedPlan;
+      const planIntegrations = GEMINI_DATA.cpdIntegrations.filter((i) => i.testPlan === p.id);
+      document.getElementById("coverage-detail").innerHTML = `
+        <div class="donut-wrap">
+          <div class="donut" style="--pct:${p.coverage}" data-pct="${p.coverage}%"></div>
+          <div><h3>${escapeHtml(p.name)}</h3><p style="color:var(--muted);font-size:0.85rem">${jiraLink(p.id, p.id)} · ${escapeHtml(p.owner)} · ${escapeHtml(p.jiraStatus || "")}</p></div>
+        </div>
+        <table class="step-table"><tr><th>Application</th><th>Status</th></tr>
+        ${p.steps.map((id) => { const s = stepById(id); return `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(statusLabel(s.status))}</td></tr>`; }).join("")}
+        </table>
+        <h4 style="margin-top:1rem;font-size:0.9rem">Integration Handoffs (${planIntegrations.length})</h4>
+        <table class="step-table"><tr><th>Handoff</th><th>Coverage</th></tr>
+        ${planIntegrations.map((int) => `<tr><td>${escapeHtml(integrationLabel(int))}</td><td>${escapeHtml(statusLabel(int.status))} · ${int.coverage}%</td></tr>`).join("")}
+        </table>
+        <p style="margin-top:1rem;font-size:0.85rem;color:var(--muted)">Pass ${p.pass} · Fail ${p.fail} · Blocked ${p.blocked} · Last run ${p.lastRun}</p>`;
+    }
+
+    function renderIntegrations() {
+      const grid = document.getElementById("flow-integrations");
+      grid.innerHTML = renderIntegrationCards();
+      bindIntegrationCards(grid, document.getElementById("flow-int-detail"));
+      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
+    }
+
+    function renderOps() {
+      document.getElementById("ops-left").innerHTML = `<h3>What Happens — Step by Step</h3>${GEMINI_DATA.stepNarratives.map((n) =>
+        `<div class="narrative"><strong>Step ${n.step}: ${escapeHtml(n.title)}</strong><p style="font-size:0.85rem;color:var(--muted);margin-top:0.25rem">${escapeHtml(n.what)}</p></div>`).join("")}`;
+      document.getElementById("ops-right").innerHTML = `<h3>Key Change (Gemini)</h3>${GEMINI_DATA.stepNarratives.map((n) =>
+        `<div class="narrative"><strong>Step ${n.step}</strong><div class="delta-box">${escapeHtml(n.delta)}</div></div>`).join("")}
+        <h3 style="margin-top:1rem">CPD Integration Dependencies</h3>${renderIntegrationOpsList()}`;
+      document.getElementById("compare").innerHTML = `<tr><th>Area</th><th>Disney+</th><th>Delta Gemini</th></tr>${GEMINI_DATA.geminiVsDisney.map((r) =>
+        `<tr><td>${escapeHtml(r.area)}</td><td>${escapeHtml(r.disney)}</td><td style="color:var(--red);font-weight:600">${escapeHtml(r.gemini)}</td></tr>`).join("")}`;
+    }
+
+    bootConsole(() => {
+      document.getElementById("tabs").querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b === btn));
+          document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === btn.dataset.tab));
+        });
+      });
+      renderFlowMap(); renderTimeline(); selectStep("fda"); renderIntegrations(); renderQA(); renderOps();
+      document.getElementById("jira-meta").innerHTML = `${renderJiraMetaFooter()}`;
+    });
+  </script>
+</body>
+</html>
