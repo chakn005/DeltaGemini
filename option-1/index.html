@@ -110,6 +110,7 @@
       <div id="workflow-diagram"></div>
     </section>
     <section class="panel" data-panel="qa">
+      <div id="exec-kpis"></div>
       <div class="kpi-row" id="kpis"></div>
       <div class="plan-cards" id="plans"></div>
       <h3 style="margin-bottom:0.75rem;font-size:0.95rem;">CPD Integration Coverage</h3>
@@ -189,18 +190,20 @@
     }
 
     function renderQA() {
+      renderQAExecutionSummary("exec-kpis");
       renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("kpis").innerHTML = `
         <div class="kpi"><div class="val">${overallCoverage()}%</div><div class="lbl">Overall Coverage</div></div>
         <div class="kpi"><div class="val">${GEMINI_DATA.testPlans.length}</div><div class="lbl">Active Test Plans</div></div>
-        <div class="kpi"><div class="val">${totalBlockers()}</div><div class="lbl">Blockers</div></div>
         <div class="kpi"><div class="val">${GEMINI_DATA.env}</div><div class="lbl">Environment</div></div>`;
       document.getElementById("plans").innerHTML = GEMINI_DATA.testPlans.map((p) => `
         <div class="plan-card">
           <h3>${escapeHtml(p.name)}</h3>
           <div class="id">${jiraLink(p.id, p.id)}${p.jiraStatus ? ` <span class="jira-status-pill">${escapeHtml(p.jiraStatus)}</span>` : ""} · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>
           ${renderPlanProgressBar(p)}
-          <p style="font-size:0.85rem;color:var(--muted)">${p.coverage}% · Pass ${p.pass} / Fail ${p.fail} / Blocked ${p.blocked} · Total ${p.total}</p>
+          ${renderPlanExecutionBar(p)}
+          ${renderPlanExecutionStats(p)}
+          <p style="font-size:0.8rem;color:var(--muted);margin-top:0.35rem">Coverage ${p.coverage}% · Total ${p.total} executions</p>
           <p style="font-size:0.8rem;margin-top:0.5rem">Steps: ${p.steps.map((id) => stepById(id).name).join(", ")} · Owner: ${escapeHtml(p.owner)}</p>
         </div>`).join("");
     }

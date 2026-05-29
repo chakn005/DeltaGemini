@@ -71,6 +71,7 @@
       <div class="cpd-int-detail" id="flow-int-detail"></div>
     </section>
     <section class="panel" data-panel="qa">
+      <div id="exec-kpis"></div>
       <div class="kpi-grid" id="kpis"></div>
       <div class="plan-stack" id="plans"></div>
       <p style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;text-transform:uppercase;">CPD Integration Coverage</p>
@@ -124,16 +125,18 @@
     }
 
     function renderQA() {
+      renderQAExecutionSummary("exec-kpis");
       renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("kpis").innerHTML = `
         <div class="kpi"><div class="v">${GEMINI_DATA.testPlans.length}</div><div class="l">Plans</div></div>
         <div class="kpi"><div class="v">${overallCoverage()}%</div><div class="l">Coverage</div></div>
-        <div class="kpi"><div class="v">${totalBlockers()}</div><div class="l">Blockers</div></div>
         <div class="kpi"><div class="v">${totalPendingTests()}</div><div class="l">Pending Tests</div></div>`;
       document.getElementById("plans").innerHTML = GEMINI_DATA.testPlans.map((p) => `
         <div class="plan-row"><div style="display:flex;justify-content:space-between"><strong>${jiraLink(p.id, p.id)}</strong><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))} · ${p.coverage}%</span></div>
-        <div style="font-size:0.7rem;color:var(--muted)">${escapeHtml(p.name)} · ${escapeHtml(p.jiraStatus || "")} · P/F/B: ${p.pass}/${p.fail}/${p.blocked} · Total ${p.total}</div>
-        ${renderPlanProgressBar(p)}</div>`).join("");
+        <div style="font-size:0.7rem;color:var(--muted)">${escapeHtml(p.name)} · ${escapeHtml(p.jiraStatus || "")} · Total ${p.total}</div>
+        ${renderPlanProgressBar(p)}
+        ${renderPlanExecutionBar(p)}
+        ${renderPlanExecutionStats(p)}</div>`).join("");
     }
 
     function renderOps() {

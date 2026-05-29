@@ -12,8 +12,34 @@ function overallCoverage() {
   return totalTests ? Math.min(100, Math.round((totalPass / totalTests) * 100)) : 0;
 }
 
-function totalBlockers() {
-  return (GEMINI_DATA.testPlans || []).reduce((a, p) => a + (p.fail || 0) + (p.blocked || 0), 0);
+function sumPlanMetric(field) {
+  return (GEMINI_DATA.testPlans || []).reduce((sum, plan) => sum + (plan[field] || 0), 0);
+}
+
+function totalPass() {
+  return sumPlanMetric("pass");
+}
+
+function totalFailed() {
+  return sumPlanMetric("fail");
+}
+
+function totalBlocked() {
+  return sumPlanMetric("blocked");
+}
+
+function renderQAExecutionSummary(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = `
+    <div class="exec-summary">
+      <h3 class="exec-summary-title">Test Plan Executions</h3>
+      <div class="kpi-row exec-kpi-row">
+        <div class="kpi exec-kpi pass"><div class="val">${totalPass()}</div><div class="lbl">Passed</div></div>
+        <div class="kpi exec-kpi fail"><div class="val">${totalFailed()}</div><div class="lbl">Failed</div></div>
+        <div class="kpi exec-kpi blocked"><div class="val">${totalBlocked()}</div><div class="lbl">Blocked</div></div>
+      </div>
+    </div>`;
 }
 
 function totalPendingTests() {
