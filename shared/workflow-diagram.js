@@ -1,8 +1,6 @@
 /* Executive workflow diagram — business-facing Delta Gemini pipeline view */
 
-const WF_MAIN_LANE = ["rightsline", "md", "fda", "falcon", "streaming"];
 const WF_BRANCH_STEPS = ["cpm", "xavier"];
-const WF_BRANCH_FROM = "fda";
 
 const WF_CONNECTOR_LABELS = {
   "rightsline|md": "Deal order (DRO) flows to metadata platform",
@@ -87,13 +85,11 @@ function renderWorkflowExecHero() {
     </header>`;
 }
 
-function renderWorkflowArrow(fromId, toId) {
+function renderWorkflowConnector(fromId, toId) {
   const label = connectorLabel(fromId, toId);
   return `
-    <div class="wf-arrow-block" aria-hidden="true">
-      <div class="wf-arrow-line"><span class="wf-arrow-head"></span></div>
-      ${label ? `<p class="wf-arrow-label">${escapeHtml(label)}</p>` : ""}
-    </div>`;
+    <div class="wf-conn-line" aria-hidden="true"><span class="wf-conn-head"></span></div>
+    ${label ? `<p class="wf-conn-label">${escapeHtml(label)}</p>` : ""}`;
 }
 
 function renderWorkflowStageCard(stepId, stepNum) {
@@ -136,34 +132,25 @@ function renderWorkflowBranchCard(stepId) {
 }
 
 function renderWorkflowPipeline() {
-  let html = "";
-  let stepNum = 1;
-
-  WF_MAIN_LANE.forEach((id, i) => {
-    if (i > 0) html += renderWorkflowArrow(WF_MAIN_LANE[i - 1], id);
-
-    if (id === WF_BRANCH_FROM) {
-      html += `
-        <div class="wf-fda-group">
-          ${renderWorkflowStageCard(id, stepNum++)}
-          <div class="wf-enrichment-zone">
-            <p class="wf-enrichment-title">Parallel enrichment during FDA processing</p>
-            <div class="wf-enrichment-rail" aria-hidden="true"></div>
-            <div class="wf-enrichment-cards">
-              ${WF_BRANCH_STEPS.map((bid) => renderWorkflowBranchCard(bid)).join("")}
-            </div>
-          </div>
-        </div>`;
-    } else {
-      html += renderWorkflowStageCard(id, stepNum++);
-    }
-  });
-
   return `
     <section class="wf-pipeline-board" aria-label="Delta Gemini pipeline">
       <p class="wf-pipeline-intro">Deal setup through metadata, processing, payload delivery, and streaming ingestion — with CPM and Xavier enrichment from FDA.</p>
-      <div class="wf-pipeline-scroll">
-        <div class="wf-pipeline-track">${html}</div>
+      <div class="wf-pipeline-grid">
+        <div class="wf-grid-cell" style="grid-area:s1">${renderWorkflowStageCard("rightsline", 1)}</div>
+        <div class="wf-grid-cell wf-grid-conn" style="grid-area:c1">${renderWorkflowConnector("rightsline", "md")}</div>
+        <div class="wf-grid-cell" style="grid-area:s2">${renderWorkflowStageCard("md", 2)}</div>
+        <div class="wf-grid-cell wf-grid-conn" style="grid-area:c2">${renderWorkflowConnector("md", "fda")}</div>
+        <div class="wf-grid-cell" style="grid-area:s3">${renderWorkflowStageCard("fda", 3)}</div>
+        <div class="wf-grid-cell wf-grid-conn" style="grid-area:c3">${renderWorkflowConnector("fda", "falcon")}</div>
+        <div class="wf-grid-cell" style="grid-area:s4">${renderWorkflowStageCard("falcon", 4)}</div>
+        <div class="wf-grid-cell wf-grid-conn" style="grid-area:c4">${renderWorkflowConnector("falcon", "streaming")}</div>
+        <div class="wf-grid-cell" style="grid-area:s5">${renderWorkflowStageCard("streaming", 5)}</div>
+        <div class="wf-grid-branches" style="grid-area:br">
+          <p class="wf-enrichment-title">Parallel enrichment from FDA</p>
+          <div class="wf-enrichment-cards">
+            ${WF_BRANCH_STEPS.map((bid) => renderWorkflowBranchCard(bid)).join("")}
+          </div>
+        </div>
       </div>
     </section>`;
 }
