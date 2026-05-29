@@ -109,7 +109,7 @@
       const rail = document.getElementById("flow-rail");
       rail.innerHTML = mainSteps.map((id, i) => {
         const s = stepById(id);
-        const st = GEMINI_DATA.statusLabels[s.status];
+        const st = GEMINI_DATA.statusLabels[s.status] || GEMINI_DATA.statusLabels.pending;
         return `${i ? '<span class="arrow">→</span>' : ""}
           <div class="flow-node" data-id="${s.id}">
             <h3>${escapeHtml(s.name)}</h3>
@@ -137,6 +137,7 @@
     }
 
     function renderQA() {
+      renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("kpis").innerHTML = `
         <div class="kpi"><div class="val">${overallCoverage()}%</div><div class="lbl">Overall Coverage</div></div>
         <div class="kpi"><div class="val">${GEMINI_DATA.testPlans.length}</div><div class="lbl">Active Test Plans</div></div>
@@ -150,8 +151,6 @@
           <p style="font-size:0.85rem;color:var(--muted)">${p.coverage}% · Pass ${p.pass} / Fail ${p.fail} / Blocked ${p.blocked} · Total ${p.total}</p>
           <p style="font-size:0.8rem;margin-top:0.5rem">Steps: ${p.steps.map((id) => stepById(id).name).join(", ")} · Owner: ${escapeHtml(p.owner)}</p>
         </div>`).join("");
-      renderApplicationMatrixEditable("app-matrix");
-      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
     }
 
     function renderIntegrations() {

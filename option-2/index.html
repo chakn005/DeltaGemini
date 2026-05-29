@@ -124,6 +124,7 @@
     }
 
     function renderQA() {
+      renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("kpis").innerHTML = `
         <div class="kpi"><div class="v">${GEMINI_DATA.testPlans.length}</div><div class="l">Plans</div></div>
         <div class="kpi"><div class="v">${overallCoverage()}%</div><div class="l">Coverage</div></div>
@@ -133,8 +134,6 @@
         <div class="plan-row"><div style="display:flex;justify-content:space-between"><strong>${jiraLink(p.id, p.id)}</strong><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))} · ${p.coverage}%</span></div>
         <div style="font-size:0.7rem;color:var(--muted)">${escapeHtml(p.name)} · ${escapeHtml(p.jiraStatus || "")} · P/F/B: ${p.pass}/${p.fail}/${p.blocked} · Total ${p.total}</div>
         ${renderPlanProgressBar(p)}</div>`).join("");
-      renderApplicationMatrixEditable("app-matrix");
-      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
     }
 
     function renderOps() {

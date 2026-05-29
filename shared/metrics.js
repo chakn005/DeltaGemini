@@ -46,6 +46,18 @@ function buildApplicationCoverageMatrix() {
   return { rows, cols, values };
 }
 
+function buildIntegrationCoverageMatrix() {
+  const m = GEMINI_DATA.integrationCoverageMatrix || { rows: [], cols: [] };
+  const values = m.rows.map(() =>
+    m.cols.map((colId) => {
+      const int = (GEMINI_DATA.cpdIntegrations || []).find((i) => i.id === colId);
+      if (!int) return "pending";
+      return int.status || planQaStatus(planByKey(int.testPlan) || {}) || "pending";
+    })
+  );
+  return { rows: m.rows, cols: m.cols, values };
+}
+
 function overallIntegrationCoverage() {
   const plans = GEMINI_DATA.testPlans || [];
   if (!plans.length) return 0;
