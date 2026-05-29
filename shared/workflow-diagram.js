@@ -52,7 +52,7 @@ function workflowStageTitle(stepId) {
 
 function renderWorkflowExecHero() {
   const cov = overallCoverage();
-  const readiness = cov >= 70 ? "On Track" : cov >= 40 ? "In Progress" : "Early Stage";
+  const readiness = cov >= 70 ? "On Track" : cov >= 40 ? "Active" : "Early";
   const readinessCls = cov >= 70 ? "ready" : cov >= 40 ? "progress" : "early";
   return `
     <header class="wf-exec-hero">
@@ -80,6 +80,10 @@ function renderWorkflowExecHero() {
         <div class="wf-exec-kpi fail">
           <span class="wf-exec-kpi-val">${totalFailed()}</span>
           <span class="wf-exec-kpi-lbl">Failed</span>
+        </div>
+        <div class="wf-exec-kpi blocked">
+          <span class="wf-exec-kpi-val">${totalBlocked()}</span>
+          <span class="wf-exec-kpi-lbl">Blocked</span>
         </div>
       </div>
     </header>`;
