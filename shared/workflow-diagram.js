@@ -4,14 +4,6 @@ const WF_MAIN_LANE = ["rightsline", "md", "fda", "falcon", "streaming"];
 const WF_BRANCH_STEPS = ["cpm", "xavier"];
 const WF_BRANCH_FROM = "fda";
 
-const WF_PHASES = [
-  { label: "Deal Setup", steps: ["rightsline"] },
-  { label: "Metadata", steps: ["md"] },
-  { label: "Processing", steps: ["fda"], branches: ["cpm", "xavier"] },
-  { label: "Payload & Avails", steps: ["falcon"] },
-  { label: "Streaming", steps: ["streaming"] },
-];
-
 const WF_CONNECTOR_LABELS = {
   "rightsline|md": "Deal order (DRO) flows to metadata platform",
   "md|fda": "Hulu CP ID routed via dedicated Kafka topic",
