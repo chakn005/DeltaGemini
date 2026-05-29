@@ -38,7 +38,7 @@ python3 -m http.server 8899
 
 | URL | Purpose |
 |-----|---------|
-| http://127.0.0.1:8899/index.html | Production hub (Option 1) |
+| http://127.0.0.1:8899/index.html | Redirects to main console |
 | http://127.0.0.1:8899/option-1/index.html | Main console |
 | http://127.0.0.1:8899/index-local.html | **Local only** — all five UI prototypes |
 
