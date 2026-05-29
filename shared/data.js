@@ -173,20 +173,6 @@ window.GEMINI_DATA = {
       "streaming"
     ]
   },
-  "examples": [
-    {
-      "type": "Series",
-      "title": "The Bear – Season 3",
-      "note": "Hulu Original",
-      "details": "Licensee = Hulu, Region = US, Start Date = June 2026"
-    },
-    {
-      "type": "Movie",
-      "title": "Planet of the Apes: New Era",
-      "note": "Licensed to Hulu",
-      "details": "Licensed title flowing through Gemini Hulu pipeline"
-    }
-  ],
   "geminiVsDisney": [
     {
       "area": "Licensee",

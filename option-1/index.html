@@ -213,9 +213,6 @@
 
     function renderOps() {
       document.getElementById("ops").innerHTML = `
-        <div class="ops-card"><h3>Example Scenarios</h3>
-          ${GEMINI_DATA.examples.map((e) => `<div class="example"><strong>${escapeHtml(e.type)}:</strong> ${escapeHtml(e.title)}<br><small>${escapeHtml(e.note)} — ${escapeHtml(e.details)}</small></div>`).join("")}
-        </div>
         <div class="ops-card"><h3>Gemini vs Disney+</h3>
           <table class="compare"><tr><th>Area</th><th>Disney+</th><th>Delta Gemini</th></tr>
           ${GEMINI_DATA.geminiVsDisney.map((r) => `<tr><td>${escapeHtml(r.area)}</td><td>${escapeHtml(r.disney)}</td><td class="gemini">${escapeHtml(r.gemini)}</td></tr>`).join("")}

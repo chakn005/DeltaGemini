@@ -95,12 +95,6 @@ body {
   height: 5px;
 }
 
-.example {
-  border-left: 3px solid var(--disney-blue-mid);
-  padding-left: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
 .compare th {
   background: var(--disney-blue-soft);
   color: var(--disney-blue);

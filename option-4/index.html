@@ -142,8 +142,6 @@
       document.getElementById("brief").innerHTML = `
         <h2>Operational Brief — Delta Gemini</h2>
         <p>Content migration for Hulu licensee requires seamless integration across Rightsline, MD, FDA, Falcon, and Disney Streaming. QA validates handoffs, Gemini deltas, and end-to-end data integrity.</p>
-        <h3>Example Titles</h3>
-        <ul>${GEMINI_DATA.examples.map((e) => `<li><strong>${escapeHtml(e.title)}</strong> (${escapeHtml(e.type)}) — ${escapeHtml(e.details)}</li>`).join("")}</ul>
         <h3>Handoff Ownership</h3>
         <table class="owner-table"><tr><th>System</th><th>Owner</th></tr>
         ${GEMINI_DATA.contacts.map((c) => `<tr><td>${escapeHtml(c.system)}</td><td>${escapeHtml(c.owners)}</td></tr>`).join("")}
