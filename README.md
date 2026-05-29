@@ -1,6 +1,6 @@
 # Delta Gemini QA Leadership Console
 
-**GitHub Pages publishes Option 1 only.** Options 2–5 remain available locally for comparison (not tracked in git).
+**GitHub Pages publishes the console at the site root.** Options 2–5 remain available locally for comparison (not tracked in git).
 
 ## Jira test plans
 
@@ -38,8 +38,7 @@ python3 -m http.server 8899
 
 | URL | Purpose |
 |-----|---------|
-| http://127.0.0.1:8899/index.html | Redirects to main console |
-| http://127.0.0.1:8899/option-1/index.html | Main console |
+| http://127.0.0.1:8899/index.html | Main console |
 | http://127.0.0.1:8899/index-local.html | **Local only** — all five UI prototypes |
 
 Options 2–5 live under `option-2/` … `option-5/` and are listed in `.gitignore` so they stay on your machine but are not pushed to GitHub.
@@ -60,4 +59,4 @@ After the workflow completes (Actions tab), the site is live at the URL above.
 
 - **Single source of truth:** `shared/data.json`
 - **Runtime load:** `shared/data.js` (auto-generated)
-- **Option 1** (and local options 2–5) read the same `GEMINI_DATA` object for consistent coverage, integrations, and Jira links.
+- **Option 1** (root `index.html`) and local options 2–5 read the same `GEMINI_DATA` object for consistent coverage, integrations, and Jira links.
