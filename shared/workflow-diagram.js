@@ -66,8 +66,8 @@ function renderWorkflowExecHero() {
       </div>
       <div class="wf-exec-kpis">
         <div class="wf-exec-kpi wf-exec-kpi-readiness ${readinessCls}">
-          <span class="wf-exec-kpi-val">${escapeHtml(readiness)}</span>
           <span class="wf-exec-kpi-lbl">Program Readiness</span>
+          <span class="wf-exec-kpi-val">${escapeHtml(readiness)}</span>
         </div>
         <div class="wf-exec-kpi wf-exec-kpi-coverage">
           <span class="wf-exec-kpi-val">${cov}%</span>
