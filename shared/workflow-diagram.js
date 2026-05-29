@@ -167,14 +167,12 @@ function renderWorkflowPipeline() {
     }
   });
 
-  const phaseHeaders = WF_PHASES.map((phase) =>
-    `<div class="wf-phase-col${phase.branches ? " has-branch" : ""}"><span>${escapeHtml(phase.label)}</span></div>`
-  ).join("");
-
   return `
     <section class="wf-pipeline-board" aria-label="Delta Gemini pipeline">
-      <div class="wf-phase-band">${phaseHeaders}</div>
-      <div class="wf-pipeline-track">${html}</div>
+      <p class="wf-pipeline-intro">Deal setup through metadata, processing, payload delivery, and streaming ingestion — with CPM and Xavier enrichment from FDA.</p>
+      <div class="wf-pipeline-scroll">
+        <div class="wf-pipeline-track">${html}</div>
+      </div>
     </section>`;
 }
 
