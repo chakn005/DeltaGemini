@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 1 — Pipeline Studio | Delta Gemini QA</title>
+  <style>
+    :root {
+      --card: var(--disney-surface);
+      --teal: var(--disney-blue-mid);
+      --teal-light: var(--disney-blue-soft);
+      --border: var(--disney-border);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+    header h1 { font-size: 1.25rem; font-weight: 600; color: var(--disney-blue); }
+    header span { color: var(--muted); font-size: 0.875rem; }
+    .hub { font-size: 0.8rem; color: var(--accent); text-decoration: none; }
+    .tabs { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; }
+    .tabs button { background: none; border: none; padding: 0.85rem 1.25rem; cursor: pointer; color: var(--muted); font-size: 0.9rem; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: inherit; }
+    .tabs button.active { color: var(--disney-blue); border-bottom-color: var(--accent); font-weight: 600; }
+    main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+    .panel { display: none; } .panel.active { display: block; }
+    .flow-rail { display: flex; align-items: flex-start; gap: 0.5rem; overflow-x: auto; padding: 1rem 0; }
+    .flow-node { flex: 0 0 140px; background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 0.85rem; cursor: pointer; transition: box-shadow 0.15s; position: relative; }
+    .flow-node:hover, .flow-node.selected { box-shadow: 0 4px 12px rgba(10, 42, 102, 0.1); border-color: var(--accent); }
+    .flow-node .badge { display: none; }
+    .flow-node h3 { font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .flow-node p { font-size: 0.72rem; color: var(--muted); }
+    .flow-node .st { font-size: 0.7rem; margin-top: 0.4rem; font-weight: 600; }
+    .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; flex-shrink: 0; }
+    .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-top: 1rem; min-height: 120px; }
+    .detail-panel h3 { margin-bottom: 0.5rem; color: var(--disney-blue); }
+    .detail-panel ul { margin-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .kpi .val { font-size: 1.5rem; font-weight: 700; color: var(--disney-blue); }
+    .kpi .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    .plan-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .plan-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .plan-card h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+    .plan-card .id { color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+    .matrix-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+    table.matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    table.matrix th, table.matrix td { padding: 0.6rem 0.5rem; border: 1px solid var(--border); text-align: center; }
+    table.matrix th { background: var(--accent-soft); font-weight: 600; color: var(--disney-blue); }
+    table.matrix td:first-child { text-align: left; font-weight: 500; background: #f8fafc; }
+    .ops-grid { display: grid; gap: 1rem; }
+    .ops-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .ops-card h3 { margin-bottom: 0.75rem; font-size: 1rem; color: var(--disney-blue); }
+    .compare { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .compare th, .compare td { padding: 0.5rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+    .risk-list li { margin-left: 1.25rem; margin-bottom: 0.35rem; font-size: 0.9rem; color: var(--muted); }
+  </style>
+  <link rel="stylesheet" href="../shared/disney-theme.css">
+  <link rel="stylesheet" href="../shared/option-layout.css">
+  <link rel="stylesheet" href="../shared/integration.css">
+  <link rel="stylesheet" href="../shared/jira.css">
+</head>
+<body>
+  <header class="disney-header">
+    <div>
+      <a class="hub" href="../index.html">← All options</a>
+      <h1>Delta Gemini QA Console — Pipeline Studio</h1>
+      <span>Program: Delta Gemini · Env: Stage · <span id="jira-meta"></span></span>
+    </div>
+  </header>
+  <nav class="tabs disney-tabs" id="tabs">
+    <button class="active" data-tab="flow">E2E Flow</button>
+    <button data-tab="qa">QA &amp; Coverage</button>
+    <button data-tab="ops">Business Ops</button>
+  </nav>
+  <main id="app" class="disney-main">
+    <section class="panel active" data-panel="flow">
+      <div class="flow-rail" id="flow-rail"></div>
+      <div class="branches" id="branches"></div>
+      <div class="detail-panel" id="flow-detail"><p style="color:var(--muted)">Select a flow node to view requirements.</p></div>
+      <h3 class="cpd-section-title">CPD Application Integrations</h3>
+      <p class="cpd-section-sub">Handoff coverage between Rightsline, MD, FDA, CPM, Xavier, Falcon, and Streaming</p>
+      <div class="cpd-int-grid" id="flow-integrations"></div>
+      <div class="cpd-int-detail" id="flow-int-detail"></div>
+    </section>
+    <section class="panel" data-panel="qa">
+      <div class="kpi-row" id="kpis"></div>
+      <div class="plan-cards" id="plans"></div>
+      <h3 style="margin-bottom:0.75rem;font-size:0.95rem;">CPD Integration Coverage</h3>
+      <div class="cpd-int-kpi-row" id="int-kpis"></div>
+      <div class="matrix-wrap" style="margin-bottom:1.5rem"><div id="int-matrix"></div></div>
+      <h3 style="margin-bottom:0.75rem;font-size:0.95rem;">Application Coverage — Step × QA Type</h3>
+      <div class="matrix-wrap"><table class="matrix" id="matrix"></table></div>
+    </section>
+    <section class="panel" data-panel="ops">
+      <div class="ops-grid" id="ops"></div>
+    </section>
+  </main>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/utils.js"></script>
+  <script src="../shared/jira.js"></script>
+  <script src="../shared/metrics.js"></script>
+  <script src="../shared/matrix-store.js"></script>
+  <script src="../shared/integration.js"></script>
+  <script>
+    const mainSteps = ["rightsline", "md", "fda", "falcon", "streaming"];
+    const branchSteps = ["cpm", "xavier"];
+
+    function renderFlow() {
+      const rail = document.getElementById("flow-rail");
+      rail.innerHTML = mainSteps.map((id, i) => {
+        const s = stepById(id);
+        const st = GEMINI_DATA.statusLabels[s.status];
+        return `${i ? '<span class="arrow">→</span>' : ""}
+          <div class="flow-node" data-id="${s.id}">
+            <h3>${escapeHtml(s.name)}</h3>
+            <p>${escapeHtml(s.short)}</p>
+            <div class="st ${st.class}">${escapeHtml(statusLabel(s.status))}</div>
+          </div>`;
+      }).join("");
+      document.getElementById("branches").innerHTML = branchSteps.map((id) => {
+        const s = stepById(id);
+        return `<div class="branch-node" data-id="${s.id}">↳ ${escapeHtml(s.name)}<br><small>${escapeHtml(s.short)}</small></div>`;
+      }).join("");
+      document.querySelectorAll(".flow-node, .branch-node").forEach((el) => {
+        el.addEventListener("click", () => showDetail(el.dataset.id, el));
+      });
+    }
+
+    function showDetail(id, el) {
+      document.querySelectorAll(".flow-node, .branch-node").forEach((n) => n.classList.remove("selected"));
+      if (el) el.classList.add("selected");
+      const s = stepById(id);
+      document.getElementById("flow-detail").innerHTML = `
+        <h3>${escapeHtml(s.name)} — ${escapeHtml(s.short)}</h3>
+        <ul>${s.requirements.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul>
+        <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted)"><strong>Handoff:</strong> ${escapeHtml(s.handoff || "—")}</p>`;
+    }
+
+    function renderQA() {
+      document.getElementById("kpis").innerHTML = `
+        <div class="kpi"><div class="val">${overallCoverage()}%</div><div class="lbl">Overall Coverage</div></div>
+        <div class="kpi"><div class="val">${GEMINI_DATA.testPlans.length}</div><div class="lbl">Active Test Plans</div></div>
+        <div class="kpi"><div class="val">${totalBlockers()}</div><div class="lbl">Blockers</div></div>
+        <div class="kpi"><div class="val">${GEMINI_DATA.env}</div><div class="lbl">Environment</div></div>`;
+      document.getElementById("plans").innerHTML = GEMINI_DATA.testPlans.map((p) => `
+        <div class="plan-card">
+          <h3>${escapeHtml(p.name)}</h3>
+          <div class="id">${jiraLink(p.id, p.id)}${p.jiraStatus ? ` <span class="jira-status-pill">${escapeHtml(p.jiraStatus)}</span>` : ""}</div>
+          <div class="progress"><div style="width:${p.coverage}%"></div></div>
+          <p style="font-size:0.85rem;color:var(--muted)">${p.coverage}% · Pass ${p.pass} / Fail ${p.fail} / Blocked ${p.blocked} · Total ${p.total}</p>
+          <p style="font-size:0.8rem;margin-top:0.5rem">Steps: ${p.steps.map((id) => stepById(id).name).join(", ")} · Owner: ${escapeHtml(p.owner)}</p>
+        </div>`).join("");
+      document.getElementById("matrix").innerHTML = renderApplicationMatrixTable();
+      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
+    }
+
+    function renderIntegrations() {
+      const grid = document.getElementById("flow-integrations");
+      grid.innerHTML = renderIntegrationCards();
+      bindIntegrationCards(grid, document.getElementById("flow-int-detail"));
+    }
+
+    function renderOps() {
+      document.getElementById("ops").innerHTML = `
+        <div class="ops-card"><h3>Example Scenarios</h3>
+          ${GEMINI_DATA.examples.map((e) => `<div class="example"><strong>${escapeHtml(e.type)}:</strong> ${escapeHtml(e.title)}<br><small>${escapeHtml(e.note)} — ${escapeHtml(e.details)}</small></div>`).join("")}
+        </div>
+        <div class="ops-card"><h3>Gemini vs Disney+</h3>
+          <table class="compare"><tr><th>Area</th><th>Disney+</th><th>Delta Gemini</th></tr>
+          ${GEMINI_DATA.geminiVsDisney.map((r) => `<tr><td>${escapeHtml(r.area)}</td><td>${escapeHtml(r.disney)}</td><td class="gemini">${escapeHtml(r.gemini)}</td></tr>`).join("")}
+          </table></div>
+        <div class="ops-card"><h3>Top Risks / Dependencies</h3><ul class="risk-list">${GEMINI_DATA.risks.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul></div>
+        <div class="ops-card"><h3>CPD Integration Handoffs</h3>
+          ${renderIntegrationOpsList()}
+        </div>
+        <div class="ops-card"><h3>System Contacts</h3>
+          ${GEMINI_DATA.contacts.map((c) => `<p style="font-size:0.9rem;margin-bottom:0.35rem"><strong>${escapeHtml(c.system)}:</strong> ${escapeHtml(c.owners)}</p>`).join("")}
+        </div>`;
+    }
+
+    bootConsole(() => {
+      initTabs(document.getElementById("app"));
+      document.getElementById("tabs").querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b === btn));
+          document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === btn.dataset.tab));
+        });
+      });
+      renderFlow(); renderIntegrations(); renderQA(); renderOps();
+      document.getElementById("jira-meta").innerHTML = GEMINI_DATA.testPlans.map((p) => jiraLink(p.id, p.id)).join(" · ");
+      showDetail("fda", document.querySelector('[data-id="fda"]'));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delta Gemini QA Console — Options Hub</title>
+  <link rel="stylesheet" href="shared/disney-theme.css">
+  <link rel="stylesheet" href="shared/jira.css">
+</head>
+<body>
+  <header class="disney-hub-header">
+    <h1>Delta Gemini QA Leadership Console</h1>
+    <p class="sub">Five UI options with the same 3-tab structure: <strong>E2E Flow</strong> · <strong>QA &amp; Coverage</strong> · <strong>Business Ops</strong>. Each includes <strong>CPD application integration coverage</strong> across Rightsline, MD, FDA, CPM, Xavier, Falcon, and Streaming.</p>
+  </header>
+  <div class="disney-hub-body">
+    <div class="disney-hub-grid">
+      <a class="disney-hub-card" href="option-1/index.html">
+        <h2>Option 1 — Pipeline Studio</h2>
+        <p>PDF-like horizontal swimlane diagram, test plan cards, coverage matrix. Disney enterprise blue theme.</p>
+        <span class="tag">Best default · diagram-first</span>
+      </a>
+      <a class="disney-hub-card" href="option-2/index.html">
+        <h2>Option 2 — Command Center</h2>
+        <p>KPI tiles, vertical pipeline, integration heatmap. Disney-themed leadership standup view.</p>
+        <span class="tag">Exec standups · KPI-heavy</span>
+      </a>
+      <a class="disney-hub-card" href="option-3/index.html">
+        <h2>Option 3 — Split Navigator</h2>
+        <p>Interactive flow map with plan→step highlighting. QA selection drives mini-flow focus.</p>
+        <span class="tag">QA + architects · cross-linked</span>
+      </a>
+      <a class="disney-hub-card" href="option-4/index.html">
+        <h2>Option 4 — Board + Brief</h2>
+        <p>Card storyboard flow, Jira-synced Kanban QA board, operational runbook.</p>
+        <span class="tag">Active QA team · kanban</span>
+      </a>
+      <a class="disney-hub-card" href="option-5/index.html">
+        <h2>Option 5 — Executive Briefing</h2>
+        <p>Export-ready scorecard, numbered flow callouts, 2-minute ops brief. Disney presentation polish.</p>
+        <span class="tag">VP reviews · print-friendly</span>
+      </a>
+    </div>
+    <footer class="disney-hub-footer" id="footer"></footer>
+  </div>
+  <script src="shared/data.js"></script>
+  <script src="shared/utils.js"></script>
+  <script src="shared/jira.js"></script>
+  <script>
+    document.getElementById("footer").innerHTML =
+      `Test plans: ${GEMINI_DATA.testPlans.map((p) => jiraLink(p.id, `${p.name} (${p.id})`)).join(" · ")}<br>${renderJiraMetaFooter()}`;
+  </script>
+</body>
+</html>

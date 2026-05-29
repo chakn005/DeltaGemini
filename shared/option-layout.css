@@ -1,0 +1,54 @@
+/* Shared layout tokens for all console options — maps to Disney theme */
+:root {
+  --bg: var(--disney-bg);
+  --surface: var(--disney-surface);
+  --text: var(--disney-text);
+  --muted: var(--disney-muted);
+  --accent: var(--disney-blue-mid);
+  --accent-soft: var(--disney-blue-soft);
+  --border: var(--disney-border);
+  --completed: var(--disney-completed);
+  --progress: var(--disney-progress);
+  --pending: var(--disney-pending);
+  --red: var(--disney-red);
+  --red-light: var(--disney-red-soft);
+  --cpd-border: var(--disney-border);
+  --cpd-surface: var(--disney-surface);
+  --cpd-accent: var(--disney-blue-mid);
+  --cpd-new: var(--disney-red);
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--disney-bg);
+  color: var(--disney-text);
+}
+
+.progress {
+  height: 8px;
+  background: var(--disney-blue-soft);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--disney-blue), var(--disney-blue-mid));
+  border-radius: 4px;
+}
+
+.example {
+  border-left: 3px solid var(--disney-blue-mid);
+  padding-left: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.compare th {
+  background: var(--disney-blue-soft);
+  color: var(--disney-blue);
+}
+
+.compare .gemini {
+  color: var(--disney-red);
+  font-weight: 600;
+}
