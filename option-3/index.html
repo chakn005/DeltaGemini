@@ -137,6 +137,7 @@
     }
 
     function renderQA() {
+      renderQAMatrices("int-matrix", "app-matrix", "int-kpis");
       document.getElementById("plan-list").innerHTML = GEMINI_DATA.testPlans.map((p, i) =>
         `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem"><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span> · ${p.coverage}% · ${escapeHtml(p.jiraStatus || "")}</div><div class="plan-item-bar">${renderPlanProgressBar(p)}</div></div>`).join("");
       document.querySelectorAll(".plan-item").forEach((el) => el.addEventListener("click", () => {
@@ -147,7 +148,6 @@
         renderFlowMap(selectedPlan.steps);
       }));
       renderPlanDetail();
-      renderApplicationMatrixEditable("app-matrix");
     }
 
     function renderPlanDetail() {
@@ -173,7 +173,6 @@
       const grid = document.getElementById("flow-integrations");
       grid.innerHTML = renderIntegrationCards();
       bindIntegrationCards(grid, document.getElementById("flow-int-detail"));
-      renderIntegrationMatrixEditable("int-matrix", "int-kpis");
     }
 
     function renderOps() {

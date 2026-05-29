@@ -106,7 +106,14 @@ body {
   color: var(--disney-blue);
 }
 
-.compare .gemini {
-  color: var(--disney-red);
-  font-weight: 600;
+#int-matrix,
+#app-matrix {
+  padding: 0.75rem;
+  min-height: 4rem;
+}
+
+#int-matrix table.matrix,
+#app-matrix table.matrix {
+  display: table;
+  width: 100%;
 }
