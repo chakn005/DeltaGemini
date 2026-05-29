@@ -116,19 +116,17 @@
       document.getElementById("ops-brief").innerHTML = `
         <div class="brief-section"><h2>1. Program Context</h2>
         <p>Delta Gemini extends the content pipeline for Hulu licensee deals. QA validates new Hulu CP ID handling, fleet configuration, Kafka topics, and streaming ingestion while reusing most Disney+ logic.</p></div>
-        <div class="brief-section"><h2>2. Example Scenarios</h2>
-        <ul>${GEMINI_DATA.examples.map((e) => `<li><strong>${escapeHtml(e.title)}</strong> (${escapeHtml(e.type)}) — ${escapeHtml(e.details)}</li>`).join("")}</ul></div>
-        <div class="brief-section"><h2>3. CPD Integration Handoffs</h2>
+        <div class="brief-section"><h2>2. CPD Integration Handoffs</h2>
         <table class="compare"><tr><th>Integration</th><th>Owner</th><th>Status</th><th>Coverage</th></tr>
         ${GEMINI_DATA.cpdIntegrations.map((int) => `<tr><td>${escapeHtml(integrationLabel(int))} — ${escapeHtml(int.label)}</td><td>${escapeHtml(int.owner)}</td><td>${statusLabel(int.status)}</td><td>${int.coverage}%</td></tr>`).join("")}
         </table></div>
-        <div class="brief-section"><h2>4. Gemini vs Disney+</h2>
+        <div class="brief-section"><h2>3. Gemini vs Disney+</h2>
         <table class="compare"><tr><th>Area</th><th>Disney+</th><th>Delta Gemini</th></tr>
         ${GEMINI_DATA.geminiVsDisney.map((r) => `<tr><td>${escapeHtml(r.area)}</td><td>${escapeHtml(r.disney)}</td><td style="color:var(--red);font-weight:600">${escapeHtml(r.gemini)}</td></tr>`).join("")}
         </table></div>
-        <div class="brief-section"><h2>5. Risks &amp; Mitigations</h2>
+        <div class="brief-section"><h2>4. Risks &amp; Mitigations</h2>
         <ul>${GEMINI_DATA.risks.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul></div>
-        <div class="brief-section"><h2>6. Contacts</h2>
+        <div class="brief-section"><h2>5. Contacts</h2>
         <ul>${GEMINI_DATA.contacts.map((c) => `<li><strong>${escapeHtml(c.system)}:</strong> ${escapeHtml(c.owners)}</li>`).join("")}</ul></div>`;
     }
 

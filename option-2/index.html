@@ -138,8 +138,7 @@
 
     function renderOps() {
       document.getElementById("ops").innerHTML = `
-        <div class="acc-item open"><div class="acc-head">Examples ▾</div><div class="acc-body">${GEMINI_DATA.examples.map((e) => `<p><strong>${escapeHtml(e.title)}</strong> (${escapeHtml(e.type)}) — ${escapeHtml(e.details)}</p>`).join("")}</div></div>
-        <div class="acc-item"><div class="acc-head">Gemini Delta Checklist ▾</div><div class="acc-body"><ul class="check">${GEMINI_DATA.deltaChecklist.map((c) => `<li>${escapeHtml(c.item)}</li>`).join("")}</ul></div></div>
+        <div class="acc-item open"><div class="acc-head">Gemini Delta Checklist ▾</div><div class="acc-body"><ul class="check">${GEMINI_DATA.deltaChecklist.map((c) => `<li>${escapeHtml(c.item)}</li>`).join("")}</ul></div></div>
         <div class="acc-item"><div class="acc-head">Risks ▾</div><div class="acc-body"><ul>${GEMINI_DATA.risks.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul></div></div>
         <div class="acc-item"><div class="acc-head">CPD Integration Handoffs ▾</div><div class="acc-body">${renderIntegrationOpsList()}</div></div>
         <div class="acc-item"><div class="acc-head">Contacts ▾</div><div class="acc-body">${GEMINI_DATA.contacts.map((c) => `<p><strong>${escapeHtml(c.system)}:</strong> ${escapeHtml(c.owners)}</p>`).join("")}</div></div>`;
