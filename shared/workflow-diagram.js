@@ -1,143 +1,277 @@
-/* Structured workflow diagram — mirrors Delta Gemini Workflow PDF */
+/* Executive workflow diagram — business-facing Delta Gemini pipeline view */
 
 const WF_MAIN_LANE = ["rightsline", "md", "fda", "falcon", "streaming"];
 const WF_BRANCH_STEPS = ["cpm", "xavier"];
 const WF_BRANCH_FROM = "fda";
 
+const WF_PHASES = [
+  { label: "Deal Setup", steps: ["rightsline"] },
+  { label: "Metadata", steps: ["md"] },
+  { label: "Processing", steps: ["fda"], branches: ["cpm", "xavier"] },
+  { label: "Payload & Avails", steps: ["falcon"] },
+  { label: "Streaming", steps: ["streaming"] },
+];
+
 const WF_CONNECTOR_LABELS = {
-  "rightsline|md": "DROs for D+ Deal with Licensee = Hulu flow to MD",
-  "md|fda": "DRO flows to FDA · Hulu CP ID via Hulu Kafka topic",
-  "fda|falcon": "Processing payload with Hulu CP ID",
-  "falcon|streaming": "Avails via Kafka · ingestion status callback",
+  "rightsline|md": "Deal order (DRO) flows to metadata platform",
+  "md|fda": "Hulu CP ID routed via dedicated Kafka topic",
+  "fda|falcon": "Processing payload with Hulu licensee context",
+  "falcon|streaming": "Avails delivered · ingestion status returned",
 };
 
 const WF_BRANCH_LABELS = {
-  cpm: "Retrieve title metadata from CPM",
-  xavier: "Retrieve picture versions from Xavier (Licensee = Hulu)",
+  cpm: "Title metadata enrichment",
+  xavier: "Picture versions (Licensee = Hulu)",
 };
 
-const WF_NARRATIVE_BY_STEP = {
-  rightsline: 1,
-  md: 2,
-  fda: 3,
-  cpm: 4,
-  xavier: 4,
-  falcon: 5,
-  streaming: 7,
+const WF_BUSINESS_OUTCOME = {
+  rightsline: "Business defines the Hulu content deal",
+  md: "Deal metadata and Hulu CP ID are registered",
+  fda: "Avail processing runs in the new Hulu fleet",
+  cpm: "Title, season, and genre metadata retrieved",
+  xavier: "Picture versions retrieved for the title",
+  falcon: "Final payload and avails prepared for delivery",
+  streaming: "Content ingested and client-ready status confirmed",
 };
 
-function integrationHandoffLabel(fromId, toId) {
-  const int = (GEMINI_DATA.cpdIntegrations || []).find((i) => i.from === fromId && i.to === toId);
-  return int ? int.label : "";
+function narrativeForStep(stepId) {
+  const map = { rightsline: 1, md: 2, fda: 3, cpm: 4, xavier: 4, falcon: 5, streaming: 7 };
+  const n = (GEMINI_DATA.stepNarratives || []).find((row) => row.step === map[stepId]);
+  return n || null;
 }
 
 function connectorLabel(fromId, toId) {
   const key = `${fromId}|${toId}`;
   if (WF_CONNECTOR_LABELS[key]) return WF_CONNECTOR_LABELS[key];
-  const intLabel = integrationHandoffLabel(fromId, toId);
-  if (intLabel) return intLabel;
-  const from = stepById(fromId);
-  return from?.handoff || "";
+  const int = (GEMINI_DATA.cpdIntegrations || []).find((i) => i.from === fromId && i.to === toId);
+  return int?.label || stepById(fromId)?.handoff || "";
+}
+
+function stepCoveragePct(stepId) {
+  const plans = (GEMINI_DATA.testPlans || []).filter((p) => (p.steps || []).includes(stepId));
+  if (!plans.length) return 0;
+  return Math.round(plans.reduce((sum, p) => sum + (p.coverage || 0), 0) / plans.length);
 }
 
 function workflowStageTitle(stepId) {
   const s = stepById(stepId);
   if (!s) return stepId;
-  if (stepId === "streaming") return "Streaming";
+  if (stepId === "streaming") return "Disney Streaming";
   return s.name;
 }
 
-function renderWorkflowStage(stepId, stepNum) {
+function renderWorkflowExecHero() {
+  const cov = overallCoverage();
+  const readiness = cov >= 70 ? "On Track" : cov >= 40 ? "In Progress" : "Early Stage";
+  const readinessCls = cov >= 70 ? "ready" : cov >= 40 ? "progress" : "early";
+  return `
+    <header class="wf-exec-hero">
+      <div class="wf-exec-hero-copy">
+        <p class="wf-exec-eyebrow">${escapeHtml(GEMINI_DATA.program)} · ${escapeHtml(GEMINI_DATA.env)} Environment</p>
+        <h2>Hulu Content Pipeline — End-to-End Workflow</h2>
+        <p class="wf-exec-lead">
+          How a Hulu licensee deal moves from Rightsline through metadata, processing, and avails to Disney Streaming —
+          reusing the Disney+ pipeline with targeted Gemini deltas for Hulu CP ID, fleet, and Kafka routing.
+        </p>
+      </div>
+      <div class="wf-exec-kpis">
+        <div class="wf-exec-kpi ${readinessCls}">
+          <span class="wf-exec-kpi-val">${escapeHtml(readiness)}</span>
+          <span class="wf-exec-kpi-lbl">Program Readiness</span>
+        </div>
+        <div class="wf-exec-kpi">
+          <span class="wf-exec-kpi-val">${cov}%</span>
+          <span class="wf-exec-kpi-lbl">QA Coverage</span>
+        </div>
+        <div class="wf-exec-kpi pass">
+          <span class="wf-exec-kpi-val">${totalPass()}</span>
+          <span class="wf-exec-kpi-lbl">Passed</span>
+        </div>
+        <div class="wf-exec-kpi fail">
+          <span class="wf-exec-kpi-val">${totalFailed()}</span>
+          <span class="wf-exec-kpi-lbl">Failed</span>
+        </div>
+      </div>
+    </header>`;
+}
+
+function renderWorkflowArrow(fromId, toId) {
+  const label = connectorLabel(fromId, toId);
+  return `
+    <div class="wf-arrow-block" aria-hidden="true">
+      <div class="wf-arrow-line"><span class="wf-arrow-head"></span></div>
+      ${label ? `<p class="wf-arrow-label">${escapeHtml(label)}</p>` : ""}
+    </div>`;
+}
+
+function renderWorkflowStageCard(stepId, stepNum) {
   const s = stepById(stepId);
   if (!s) return "";
   const st = GEMINI_DATA.statusLabels[s.status] || GEMINI_DATA.statusLabels.pending;
-  const deltaCls = s.isNew ? " gemini-delta" : "";
-  const titleAttr = stepId === "streaming" ? ' title="Disney Streaming"' : "";
-  return `<div class="wf-stage${deltaCls}" data-step="${escapeHtml(stepId)}"${titleAttr}>
-    <span class="wf-stage-num">${stepNum}</span>
-    <h3>${escapeHtml(workflowStageTitle(stepId))}</h3>
-    <p>${escapeHtml(s.short)}</p>
-    <span class="wf-qa-status ${st.class}">${escapeHtml(statusLabel(s.status))}</span>
-  </div>`;
+  const narrative = narrativeForStep(stepId);
+  const outcome = WF_BUSINESS_OUTCOME[stepId] || s.short;
+  const deltaCls = s.isNew ? " is-delta" : "";
+  const coverage = stepCoveragePct(stepId);
+
+  return `
+    <article class="wf-stage-card${deltaCls}" data-step="${escapeHtml(stepId)}">
+      <div class="wf-stage-card-head">
+        <span class="wf-stage-badge">${stepNum}</span>
+        ${s.isNew ? '<span class="wf-delta-chip">Hulu Delta</span>' : ""}
+      </div>
+      <h3>${escapeHtml(workflowStageTitle(stepId))}</h3>
+      <p class="wf-stage-role">${escapeHtml(s.short)}</p>
+      <p class="wf-stage-outcome">${escapeHtml(outcome)}</p>
+      ${narrative?.delta ? `<p class="wf-stage-delta">${escapeHtml(narrative.delta)}</p>` : ""}
+      <footer class="wf-stage-footer">
+        <span class="wf-qa-pill ${st.class}">${escapeHtml(statusLabel(s.status))}</span>
+        <span class="wf-coverage-pill">${coverage}% QA</span>
+      </footer>
+    </article>`;
 }
 
-function renderWorkflowConnector(fromId, toId) {
-  const label = connectorLabel(fromId, toId);
-  return `<div class="wf-connector" aria-hidden="true">
-    <div class="wf-connector-line"></div>
-    ${label ? `<div class="wf-connector-label">${escapeHtml(label)}</div>` : ""}
-  </div>`;
+function renderWorkflowBranchCard(stepId) {
+  const s = stepById(stepId);
+  if (!s) return "";
+  const narrative = narrativeForStep(stepId);
+  const deltaCls = s.isNew ? " is-delta" : "";
+  return `
+    <article class="wf-branch-card${deltaCls}" data-step="${escapeHtml(stepId)}">
+      <h4>${escapeHtml(s.name)}</h4>
+      <p>${escapeHtml(WF_BRANCH_LABELS[stepId] || s.short)}</p>
+      ${narrative?.delta ? `<p class="wf-branch-delta">${escapeHtml(narrative.delta)}</p>` : ""}
+    </article>`;
 }
 
-function renderWorkflowMainLane() {
+function renderWorkflowPipeline() {
   let html = "";
   let stepNum = 1;
+
   WF_MAIN_LANE.forEach((id, i) => {
-    if (i > 0) html += renderWorkflowConnector(WF_MAIN_LANE[i - 1], id);
+    if (i > 0) html += renderWorkflowArrow(WF_MAIN_LANE[i - 1], id);
+
     if (id === WF_BRANCH_FROM) {
-      html += `<div class="wf-fda-cluster">
-        ${renderWorkflowStage(id, stepNum++)}
-        <div class="wf-branch-rail">
-          <div class="wf-branch-connector" aria-hidden="true"></div>
-          <div class="wf-branch-lane">${renderWorkflowBranches()}</div>
-        </div>
-      </div>`;
+      html += `
+        <div class="wf-fda-group">
+          ${renderWorkflowStageCard(id, stepNum++)}
+          <div class="wf-enrichment-zone">
+            <p class="wf-enrichment-title">Parallel enrichment during FDA processing</p>
+            <div class="wf-enrichment-rail" aria-hidden="true"></div>
+            <div class="wf-enrichment-cards">
+              ${WF_BRANCH_STEPS.map((bid) => renderWorkflowBranchCard(bid)).join("")}
+            </div>
+          </div>
+        </div>`;
     } else {
-      html += renderWorkflowStage(id, stepNum++);
+      html += renderWorkflowStageCard(id, stepNum++);
     }
   });
-  return html;
+
+  const phaseHeaders = WF_PHASES.map((phase) =>
+    `<div class="wf-phase-col${phase.branches ? " has-branch" : ""}"><span>${escapeHtml(phase.label)}</span></div>`
+  ).join("");
+
+  return `
+    <section class="wf-pipeline-board" aria-label="Delta Gemini pipeline">
+      <div class="wf-phase-band">${phaseHeaders}</div>
+      <div class="wf-pipeline-track">${html}</div>
+    </section>`;
 }
 
-function renderWorkflowBranches() {
-  return WF_BRANCH_STEPS.map((id) => {
-    const s = stepById(id);
-    if (!s) return "";
-    const deltaCls = s.isNew ? " gemini-delta" : "";
-    const int = (GEMINI_DATA.cpdIntegrations || []).find((i) => i.to === id && i.from === WF_BRANCH_FROM);
-    const branchLabel = WF_BRANCH_LABELS[id] || int?.label || s.short;
-    return `<div class="wf-branch${deltaCls}">
-      <h4>${escapeHtml(s.name)}</h4>
-      <p>${escapeHtml(branchLabel)}</p>
-    </div>`;
-  }).join("");
+function renderWorkflowStory() {
+  return (GEMINI_DATA.stepNarratives || []).map((n) => `
+    <div class="wf-story-item">
+      <div class="wf-story-num">${n.step}</div>
+      <div class="wf-story-body">
+        <h4>${escapeHtml(n.title)}</h4>
+        <p>${escapeHtml(n.what)}</p>
+        <p class="wf-story-delta"><strong>Gemini change:</strong> ${escapeHtml(n.delta)}</p>
+      </div>
+    </div>`).join("");
 }
 
-function renderWorkflowDetailCards() {
-  const ordered = [...WF_MAIN_LANE.slice(0, 3), ...WF_BRANCH_STEPS, ...WF_MAIN_LANE.slice(3)];
-  return ordered.map((id) => {
-    const s = stepById(id);
-    if (!s) return "";
-    const deltaCls = s.isNew ? " gemini-delta" : "";
-    const narrativeStep = WF_NARRATIVE_BY_STEP[id];
-    const narrative = narrativeStep
-      ? (GEMINI_DATA.stepNarratives || []).find((n) => n.step === narrativeStep)
-      : null;
-    const reqs = s.requirements || [];
-    return `<article class="wf-detail-card${deltaCls}">
-      <h3>${escapeHtml(s.name)} — ${escapeHtml(s.short)}</h3>
-      ${narrative ? `<p class="wf-detail-sub">${escapeHtml(narrative.what)}</p>` : ""}
-      <ol>${reqs.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ol>
-      ${s.handoff ? `<p class="wf-handoff-out"><strong>Handoff:</strong> ${escapeHtml(s.handoff)}</p>` : ""}
-    </article>`;
-  }).join("");
+function renderWorkflowDeltaCompare() {
+  return `
+    <table class="wf-delta-table">
+      <thead><tr><th>Area</th><th>Disney+ Today</th><th>Delta Gemini (Hulu)</th></tr></thead>
+      <tbody>
+        ${(GEMINI_DATA.geminiVsDisney || []).map((row) => `
+          <tr>
+            <td>${escapeHtml(row.area)}</td>
+            <td>${escapeHtml(row.disney)}</td>
+            <td class="wf-delta-highlight">${escapeHtml(row.gemini)}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>`;
 }
 
-function renderWorkflowHandoffsTable() {
+function renderWorkflowPlanSummary() {
+  return (GEMINI_DATA.testPlans || []).map((plan) => `
+    <div class="wf-plan-chip">
+      <div class="wf-plan-chip-head">
+        <strong>${jiraLink(plan.id, plan.id)}</strong>
+        <span class="${statusClass(planBarStatus(plan))}">${escapeHtml(statusLabel(planBarStatus(plan)))}</span>
+      </div>
+      <p>${escapeHtml(plan.name)}</p>
+      ${renderPlanExecutionBar(plan)}
+      <div class="wf-plan-chip-stats">
+        <span class="exec-stat pass">${plan.pass} passed</span>
+        <span class="exec-stat fail">${plan.fail} failed</span>
+        <span class="exec-stat blocked">${plan.blocked} blocked</span>
+      </div>
+    </div>`).join("");
+}
+
+function renderWorkflowHandoffsExecutive() {
   const rows = (GEMINI_DATA.cpdIntegrations || []).map((int) => {
     const st = GEMINI_DATA.statusLabels[int.status] || GEMINI_DATA.statusLabels.pending;
+    const from = stepById(int.from);
+    const to = stepById(int.to);
     return `<tr>
-      <td>${escapeHtml(stepById(int.from).name)} → ${escapeHtml(stepById(int.to).name)}</td>
+      <td><strong>${escapeHtml(from.name)}</strong> → <strong>${escapeHtml(to.name)}</strong></td>
       <td>${escapeHtml(int.label)}</td>
       <td>${escapeHtml(int.payload)}</td>
       <td><span class="${st.class}">${escapeHtml(statusLabel(int.status))}</span></td>
       <td>${int.coverage}%</td>
+      <td>${escapeHtml(int.owner)}</td>
     </tr>`;
   }).join("");
-  return `<table class="wf-handoffs-table">
-    <thead><tr><th>Integration</th><th>Handoff</th><th>Payload</th><th>QA Status</th><th>Coverage</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+
+  return `
+    <table class="wf-handoffs-exec">
+      <thead>
+        <tr>
+          <th>Systems</th>
+          <th>Business Handoff</th>
+          <th>Payload</th>
+          <th>QA Status</th>
+          <th>Coverage</th>
+          <th>Owner</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function bindWorkflowStageFocus(root) {
+  const cards = root.querySelectorAll("[data-step]");
+  const storyItems = root.querySelectorAll(".wf-story-item");
+  const stepToNarrative = { rightsline: 1, md: 2, fda: 3, cpm: 4, xavier: 4, falcon: 5, streaming: 7 };
+  if (!cards.length) return;
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const stepId = card.dataset.step;
+      const narrativeStep = stepToNarrative[stepId];
+      cards.forEach((c) => c.classList.toggle("is-focused", c === card));
+      storyItems.forEach((item) => {
+        const itemStep = Number(item.querySelector(".wf-story-num")?.textContent);
+        item.classList.toggle("is-focused", itemStep === narrativeStep);
+      });
+      const focused = root.querySelector(".wf-story-item.is-focused");
+      if (focused) focused.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  });
 }
 
 function renderWorkflowDiagram(containerId) {
@@ -145,23 +279,34 @@ function renderWorkflowDiagram(containerId) {
   if (!el) return;
 
   el.innerHTML = `
-    <div class="wf-diagram">
-      <div class="wf-diagram-header">
-        <div>
-          <h2>Delta Gemini End-to-End Workflow</h2>
-          <p>Structured view of the Rightsline → MD → FDA → Falcon → Disney Streaming pipeline, with CPM and Xavier branches from FDA. QA status reflects live Jira test plan coverage.</p>
-        </div>
-        <div class="wf-legend">
-          <span class="wf-legend-swatch" aria-hidden="true"></span>
-          <span>Gemini delta functionality (per workflow diagram)</span>
-        </div>
+    <div class="wf-exec">
+      ${renderWorkflowExecHero()}
+      ${renderWorkflowPipeline()}
+      <div class="wf-exec-grid">
+        <section class="wf-panel wf-story-panel">
+          <h3>Business Flow — Step by Step</h3>
+          <p class="wf-panel-sub">Click a pipeline stage above to highlight the matching business step.</p>
+          <div class="wf-story">${renderWorkflowStory()}</div>
+        </section>
+        <aside class="wf-panel wf-side-panel">
+          <section class="wf-side-block">
+            <h3>What's New for Hulu</h3>
+            <p class="wf-panel-sub">How Delta Gemini differs from the existing Disney+ pipeline.</p>
+            ${renderWorkflowDeltaCompare()}
+          </section>
+          <section class="wf-side-block">
+            <h3>Test Plan Health</h3>
+            <p class="wf-panel-sub">Live execution status from Jira Xray test plans.</p>
+            <div class="wf-plan-chips">${renderWorkflowPlanSummary()}</div>
+          </section>
+        </aside>
       </div>
-      <div class="wf-lane-wrap">
-        <div class="wf-main-lane">${renderWorkflowMainLane()}</div>
-      </div>
-    </div>
-    <h3 class="section-title">Stage Requirements</h3>
-    <div class="wf-details">${renderWorkflowDetailCards()}</div>
-    <h3 class="section-title">CPD Integration Handoffs</h3>
-    ${renderWorkflowHandoffsTable()}`;
+      <section class="wf-panel wf-handoffs-panel">
+        <h3>CPD Integration Handoffs</h3>
+        <p class="wf-panel-sub">Cross-system handoffs validated through linked Jira test plans.</p>
+        ${renderWorkflowHandoffsExecutive()}
+      </section>
+    </div>`;
+
+  bindWorkflowStageFocus(el);
 }
