@@ -42,7 +42,13 @@ Open http://127.0.0.1:8899/index.html
 
 Live site: **https://chakn005.github.io/DeltaGemini/**
 
-Pushes to the `main` branch deploy automatically via GitHub Actions. After the first push, enable **Settings → Pages → Build and deployment → GitHub Actions** if prompted.
+Pushes to `main` publish the site to the `gh-pages` branch. One-time setup in the repo:
+
+1. Open [DeltaGemini → Settings → Pages](https://github.com/chakn005/DeltaGemini/settings/pages)
+2. **Build and deployment → Source:** Deploy from a branch
+3. **Branch:** `gh-pages` / `/ (root)` → Save
+
+After the workflow completes (Actions tab), the site is live at the URL above.
 
 ## Data model
 
