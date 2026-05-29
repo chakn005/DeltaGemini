@@ -65,25 +65,21 @@ function renderWorkflowExecHero() {
         </p>
       </div>
       <div class="wf-exec-kpis">
-        <div class="wf-exec-kpi ${readinessCls}">
+        <div class="wf-exec-kpi wf-exec-kpi-readiness ${readinessCls}">
           <span class="wf-exec-kpi-val">${escapeHtml(readiness)}</span>
           <span class="wf-exec-kpi-lbl">Program Readiness</span>
         </div>
-        <div class="wf-exec-kpi">
+        <div class="wf-exec-kpi wf-exec-kpi-coverage">
           <span class="wf-exec-kpi-val">${cov}%</span>
           <span class="wf-exec-kpi-lbl">QA Coverage</span>
         </div>
-        <div class="wf-exec-kpi pass">
+        <div class="wf-exec-kpi wf-exec-kpi-pass">
           <span class="wf-exec-kpi-val">${totalPass()}</span>
           <span class="wf-exec-kpi-lbl">Passed</span>
         </div>
-        <div class="wf-exec-kpi fail">
+        <div class="wf-exec-kpi wf-exec-kpi-fail">
           <span class="wf-exec-kpi-val">${totalFailed()}</span>
           <span class="wf-exec-kpi-lbl">Failed</span>
-        </div>
-        <div class="wf-exec-kpi blocked">
-          <span class="wf-exec-kpi-val">${totalBlocked()}</span>
-          <span class="wf-exec-kpi-lbl">Blocked</span>
         </div>
       </div>
     </header>`;
