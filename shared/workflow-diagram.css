@@ -57,20 +57,24 @@
 
 .wf-main-lane {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 0;
-  min-width: min(100%, 900px);
+  min-width: min-content;
 }
 
 .wf-stage {
-  flex: 1 1 0;
-  min-width: 118px;
+  flex: 0 0 132px;
+  width: 132px;
+  min-width: 132px;
+  max-width: 132px;
+  min-height: 96px;
   background: var(--disney-blue-soft);
   border: 2px solid var(--disney-border);
   border-radius: 10px;
-  padding: 0.85rem 0.65rem;
+  padding: 0.75rem 0.5rem;
   text-align: center;
   position: relative;
+  box-sizing: border-box;
 }
 
 .wf-stage.gemini-delta {
@@ -122,9 +126,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0 0.15rem;
   min-width: 72px;
+  margin-top: 2.25rem;
 }
 
 .wf-connector-line {
@@ -153,48 +158,75 @@
   max-width: 72px;
 }
 
-.wf-branch-zone {
-  position: relative;
-  margin: 0.75rem 0 0.5rem;
-  padding-top: 1.5rem;
-  min-height: 100px;
+.wf-fda-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.wf-branch-zone::before {
+.wf-branch-rail {
+  width: 100%;
+  padding-top: 0.35rem;
+}
+
+.wf-branch-connector {
+  position: relative;
+  height: 18px;
+  width: 100%;
+  margin-bottom: 0.15rem;
+}
+
+.wf-branch-connector::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 28%;
+  left: 50%;
   width: 2px;
-  height: 1.25rem;
+  height: 10px;
+  background: var(--disney-blue-mid);
+  transform: translateX(-50%);
+}
+
+.wf-branch-connector::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 18%;
+  right: 18%;
+  height: 2px;
   background: var(--disney-blue-mid);
 }
 
 .wf-branch-lane {
   display: flex;
   justify-content: center;
-  gap: 2.5rem;
-  flex-wrap: wrap;
-  margin-left: 18%;
+  gap: 0.65rem;
+  flex-wrap: nowrap;
 }
 
 .wf-branch {
-  flex: 0 0 140px;
+  flex: 0 0 120px;
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+  min-height: 76px;
   background: #f8fafc;
   border: 2px dashed var(--disney-border);
   border-radius: 10px;
-  padding: 0.75rem;
+  padding: 0.65rem 0.45rem;
   text-align: center;
   position: relative;
+  box-sizing: border-box;
 }
 
 .wf-branch::before {
   content: "";
   position: absolute;
-  top: -1.35rem;
+  top: -10px;
   left: 50%;
   width: 2px;
-  height: 1.35rem;
+  height: 10px;
   background: var(--disney-blue-mid);
   transform: translateX(-50%);
 }
