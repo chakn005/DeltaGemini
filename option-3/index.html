@@ -33,7 +33,7 @@
     .plan-item .id { font-weight: 700; color: var(--disney-blue); font-size: 0.9rem; }
     .coverage-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
     .donut-wrap { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem; }
-    .donut { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--disney-blue-mid) 0deg, var(--disney-blue-mid) calc(var(--pct) * 3.6deg), var(--pending) calc(var(--pct) * 3.6deg)); display: flex; align-items: center; justify-content: center; }
+    .donut { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--donut-accent, var(--disney-pending)) 0deg, var(--donut-accent, var(--disney-pending)) calc(var(--pct) * 3.6deg), var(--disney-pending-bg) calc(var(--pct) * 3.6deg)); display: flex; align-items: center; justify-content: center; }
     .donut::after { content: attr(data-pct); width: 56px; height: 56px; background: var(--surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--disney-blue); }
     .step-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
     .step-table th, .step-table td { padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: left; }
@@ -83,6 +83,8 @@
       <h3 class="cpd-section-title" style="margin-top:1.25rem">CPD Integration Coverage Matrix</h3>
       <div class="cpd-int-kpi-row" id="int-kpis"></div>
       <div class="coverage-panel" style="overflow-x:auto"><div id="int-matrix"></div></div>
+      <h3 class="cpd-section-title" style="margin-top:1.25rem">Application Coverage — Step × QA Type</h3>
+      <div class="coverage-panel" style="overflow-x:auto"><div id="app-matrix"></div></div>
     </section>
     <section class="panel" data-panel="ops">
       <div class="ops-cols">
@@ -136,7 +138,7 @@
 
     function renderQA() {
       document.getElementById("plan-list").innerHTML = GEMINI_DATA.testPlans.map((p, i) =>
-        `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem">${p.coverage}% coverage · ${escapeHtml(p.jiraStatus || "")}</div></div>`).join("");
+        `<div class="plan-item ${i === 0 ? "active" : ""}" data-idx="${i}"><div class="id">${jiraLink(p.id, p.id)}</div><div style="font-size:0.85rem">${escapeHtml(p.name)}</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem"><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span> · ${p.coverage}% · ${escapeHtml(p.jiraStatus || "")}</div><div class="plan-item-bar">${renderPlanProgressBar(p)}</div></div>`).join("");
       document.querySelectorAll(".plan-item").forEach((el) => el.addEventListener("click", () => {
         document.querySelectorAll(".plan-item").forEach((p) => p.classList.remove("active"));
         el.classList.add("active");
@@ -145,6 +147,7 @@
         renderFlowMap(selectedPlan.steps);
       }));
       renderPlanDetail();
+      renderApplicationMatrixEditable("app-matrix");
     }
 
     function renderPlanDetail() {
@@ -152,9 +155,10 @@
       const planIntegrations = GEMINI_DATA.cpdIntegrations.filter((i) => i.testPlan === p.id);
       document.getElementById("coverage-detail").innerHTML = `
         <div class="donut-wrap">
-          <div class="donut" style="--pct:${p.coverage}" data-pct="${p.coverage}%"></div>
-          <div><h3>${escapeHtml(p.name)}</h3><p style="color:var(--muted);font-size:0.85rem">${jiraLink(p.id, p.id)} · ${escapeHtml(p.owner)} · ${escapeHtml(p.jiraStatus || "")}</p></div>
+          <div class="donut ${planBarStatus(p)}" style="${planDonutStyle(p)}" data-pct="${p.coverage}%"></div>
+          <div><h3>${escapeHtml(p.name)}</h3><p style="color:var(--muted);font-size:0.85rem">${jiraLink(p.id, p.id)} · ${escapeHtml(p.owner)} · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></p></div>
         </div>
+        ${renderPlanProgressBar(p)}
         <table class="step-table"><tr><th>Application</th><th>Status</th></tr>
         ${p.steps.map((id) => { const s = stepById(id); return `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(statusLabel(s.status))}</td></tr>`; }).join("")}
         </table>

@@ -88,10 +88,13 @@ function renderIntegrationFlowStrip() {
 }
 
 function renderApplicationMatrixTable() {
-  const m = GEMINI_DATA._applicationMatrix || buildApplicationCoverageMatrix();
-  const colNames = m.cols.map((id) => stepById(id).name);
+  const derived = buildApplicationCoverageMatrix();
+  const values = typeof loadApplicationMatrixValues === "function"
+    ? loadApplicationMatrixValues()
+    : derived.values;
+  const colNames = derived.cols.map((id) => stepById(id).name);
   return `<tr><th>QA Type</th>${colNames.map((n) => `<th>${escapeHtml(n)}</th>`).join("")}</tr>
-    ${m.rows.map((row, ri) => `<tr><td>${escapeHtml(row)}</td>${m.values[ri].map((v) => `<td class="${integrationCellClass(v)}">${escapeHtml(statusLabel(v))}</td>`).join("")}</tr>`).join("")}`;
+    ${derived.rows.map((row, ri) => `<tr><td>${escapeHtml(row)}</td>${values[ri].map((v) => `<td class="${integrationCellClass(v)}">${escapeHtml(statusLabel(v))}</td>`).join("")}</tr>`).join("")}`;
 }
 
 function bootConsole(renderAll) {

@@ -58,6 +58,20 @@ function planQaStatus(plan) {
   return "pending";
 }
 
+function planBarStatus(plan) {
+  return planQaStatus(plan);
+}
+
+function planDonutStyle(plan) {
+  const st = planBarStatus(plan);
+  const accent = st === "completed"
+    ? "var(--disney-completed)"
+    : st === "in-progress"
+      ? "var(--disney-progress)"
+      : "var(--disney-pending)";
+  return `--pct:${plan.coverage || 0}; --donut-accent:${accent}`;
+}
+
 function applyDerivedIntegrationMetrics() {
   (GEMINI_DATA.cpdIntegrations || []).forEach((integration) => {
     const plan = planByKey(integration.testPlan);

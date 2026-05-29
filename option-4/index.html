@@ -77,7 +77,7 @@
       <h3 class="section-title">CPD Integration Coverage Matrix</h3>
       <div id="int-matrix"></div>
       <h3 class="section-title">Application Coverage — Step × QA Type</h3>
-      <div class="matrix-wrap" style="margin-bottom:1rem"><table class="matrix" id="app-matrix"></table></div>
+      <div class="matrix-wrap" style="margin-bottom:1rem"><div id="app-matrix"></div></div>
       <h3 class="cpd-section-title">QA Workboard</h3>
       <div class="kanban" id="kanban"></div>
     </section>
@@ -120,10 +120,10 @@
       document.getElementById("cov-bar").innerHTML = `
         <div class="stat">App coverage: <strong>${overallCoverage()}%</strong></div>
         <div class="stat">Integration coverage: <strong>${overallIntegrationCoverage()}%</strong></div>
-        ${GEMINI_DATA.testPlans.map((p) => `<div class="stat">${escapeHtml(p.id)}: <strong>${p.coverage}%</strong></div>`).join("")}
+        ${GEMINI_DATA.testPlans.map((p) => `<div class="stat plan-stat-bar"><div>${escapeHtml(p.id)}: <strong>${p.coverage}%</strong> · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>${renderPlanProgressBar(p)}</div>`).join("")}
         <div class="stat">Blockers: <strong>${totalBlockers()}</strong></div>`;
       renderIntegrationMatrixEditable("int-matrix", "int-kpis");
-      document.getElementById("app-matrix").innerHTML = renderApplicationMatrixTable();
+      renderApplicationMatrixEditable("app-matrix");
       const cols = [
         { key: "backlog", title: "Backlog", cls: "backlog" },
         { key: "inTest", title: "In Test", cls: "intest" },
