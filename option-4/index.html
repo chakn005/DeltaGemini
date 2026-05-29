@@ -126,7 +126,7 @@
         <div class="stat exec-col-pass">Passed: <strong>${totalPass()}</strong></div>
         <div class="stat exec-col-fail">Failed: <strong>${totalFailed()}</strong></div>
         <div class="stat exec-col-blocked">Blocked: <strong>${totalBlocked()}</strong></div>
-        ${GEMINI_DATA.testPlans.map((p) => `<div class="stat plan-stat-bar"><div>${escapeHtml(p.id)}: <strong>${p.coverage}%</strong> · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>${renderPlanProgressBar(p)}${renderPlanExecutionBar(p)}<div class="exec-stats" style="font-size:0.75rem"><span class="exec-stat pass">${p.pass} Passed</span><span class="exec-stat fail">${p.fail} Failed</span><span class="exec-stat blocked">${p.blocked} Blocked</span></div></div>`).join("")}`;
+        ${GEMINI_DATA.testPlans.map((p) => `<div class="stat plan-stat-bar"><div>${escapeHtml(p.id)}: <strong>${p.coverage}%</strong> · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>${renderPlanExecutionBar(p)}<div class="exec-stats" style="font-size:0.75rem"><span class="exec-stat pass">${p.pass} Passed</span><span class="exec-stat fail">${p.fail} Failed</span><span class="exec-stat blocked">${p.blocked} Blocked</span></div></div>`).join("")}`;
       const cols = [
         { key: "backlog", title: "Backlog", cls: "backlog" },
         { key: "inTest", title: "In Test", cls: "intest" },
