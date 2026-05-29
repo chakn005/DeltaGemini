@@ -29,6 +29,8 @@
     .flow-node p { font-size: 0.72rem; color: var(--muted); }
     .flow-node .st { font-size: 0.7rem; margin-top: 0.4rem; font-weight: 600; }
     .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; flex-shrink: 0; }
+    .branches { display: flex; gap: 1rem; margin: 0.5rem 0 1rem 280px; }
+    .branch-node { flex: 0 0 120px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; padding: 0.65rem; font-size: 0.75rem; cursor: pointer; }
     .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-top: 1rem; min-height: 120px; }
     .detail-panel h3 { margin-bottom: 0.5rem; color: var(--disney-blue); }
     .detail-panel ul { margin-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
@@ -87,7 +89,7 @@
       <div class="cpd-int-kpi-row" id="int-kpis"></div>
       <div class="matrix-wrap" style="margin-bottom:1.5rem"><div id="int-matrix"></div></div>
       <h3 style="margin-bottom:0.75rem;font-size:0.95rem;">Application Coverage — Step × QA Type</h3>
-      <div class="matrix-wrap"><table class="matrix" id="matrix"></table></div>
+      <div class="matrix-wrap"><div id="app-matrix"></div></div>
     </section>
     <section class="panel" data-panel="ops">
       <div class="ops-grid" id="ops"></div>
@@ -143,12 +145,12 @@
       document.getElementById("plans").innerHTML = GEMINI_DATA.testPlans.map((p) => `
         <div class="plan-card">
           <h3>${escapeHtml(p.name)}</h3>
-          <div class="id">${jiraLink(p.id, p.id)}${p.jiraStatus ? ` <span class="jira-status-pill">${escapeHtml(p.jiraStatus)}</span>` : ""}</div>
-          <div class="progress"><div style="width:${p.coverage}%"></div></div>
+          <div class="id">${jiraLink(p.id, p.id)}${p.jiraStatus ? ` <span class="jira-status-pill">${escapeHtml(p.jiraStatus)}</span>` : ""} · <span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></div>
+          ${renderPlanProgressBar(p)}
           <p style="font-size:0.85rem;color:var(--muted)">${p.coverage}% · Pass ${p.pass} / Fail ${p.fail} / Blocked ${p.blocked} · Total ${p.total}</p>
           <p style="font-size:0.8rem;margin-top:0.5rem">Steps: ${p.steps.map((id) => stepById(id).name).join(", ")} · Owner: ${escapeHtml(p.owner)}</p>
         </div>`).join("");
-      document.getElementById("matrix").innerHTML = renderApplicationMatrixTable();
+      renderApplicationMatrixEditable("app-matrix");
       renderIntegrationMatrixEditable("int-matrix", "int-kpis");
     }
 

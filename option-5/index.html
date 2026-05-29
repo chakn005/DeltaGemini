@@ -64,7 +64,7 @@
       <h3 class="section-title">Integration QA Matrix</h3>
       <div id="int-matrix"></div>
       <h3 class="section-title">Coverage by Application</h3>
-      <div class="matrix-wrap"><table class="matrix" id="step-grid"></table></div>
+      <div class="matrix-wrap"><div id="app-matrix"></div></div>
     </section>
     <section class="panel" data-panel="ops">
       <div id="ops-brief"></div>
@@ -106,11 +106,11 @@
       const rColor = cov >= 70 ? "var(--completed)" : cov >= 40 ? "var(--progress)" : "var(--pending)";
       document.getElementById("readiness").innerHTML = `<div class="status" style="color:${rColor}">${readiness}</div><p>Application QA: ${cov}% · Integration QA: ${overallIntegrationCoverage()}% · ${totalBlockers()} open blockers · Env: ${GEMINI_DATA.env}</p>`;
       document.getElementById("plan-table").innerHTML = `<tr><th>Test Plan</th><th>Jira</th><th>Status</th><th>Coverage</th><th>Pass/Fail/Blocked</th></tr>
-        ${GEMINI_DATA.testPlans.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${jiraLink(p.id, p.id)}</td><td>${escapeHtml(p.jiraStatus || GEMINI_DATA.statusLabels[p.status].label)}</td><td>${p.coverage}%</td><td>${p.pass}/${p.fail}/${p.blocked} (total ${p.total})</td></tr>`).join("")}`;
+        ${GEMINI_DATA.testPlans.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${jiraLink(p.id, p.id)}</td><td><span class="${statusClass(planBarStatus(p))}">${escapeHtml(statusLabel(planBarStatus(p)))}</span></td><td class="coverage-cell-bar">${p.coverage}%${renderPlanProgressBar(p)}</td><td>${p.pass}/${p.fail}/${p.blocked} (total ${p.total})</td></tr>`).join("")}`;
       document.getElementById("int-table").innerHTML = `<tr><th>Integration</th><th>Payload</th><th>Status</th><th>Coverage</th><th>Plan</th></tr>
         ${GEMINI_DATA.cpdIntegrations.map((int) => `<tr><td>${escapeHtml(integrationLabel(int))}</td><td>${escapeHtml(int.payload)}</td><td>${statusLabel(int.status)}</td><td>${int.coverage}%</td><td>${jiraLink(int.testPlan, int.testPlan)}</td></tr>`).join("")}`;
       renderIntegrationMatrixEditable("int-matrix", "int-kpis");
-      document.getElementById("step-grid").innerHTML = renderApplicationMatrixTable();
+      renderApplicationMatrixEditable("app-matrix");
     }
 
     function renderOps() {

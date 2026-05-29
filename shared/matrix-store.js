@@ -126,3 +126,66 @@ function renderIntegrationMatrixHeatmap(containerId) {
         ${values[ri].map((status) => `<span class="cell cell-${status === "in-progress" ? "progress" : status}">${escapeHtml(statusLabel(status))}</span>`).join("")}
       </div>`).join("")}`;
 }
+
+/* Editable Application Coverage matrix — persisted in browser localStorage */
+
+const APP_MATRIX_STORAGE_KEY = "delta-gemini-application-matrix";
+
+function defaultApplicationMatrixValues() {
+  return buildApplicationCoverageMatrix().values;
+}
+
+function loadApplicationMatrixValues() {
+  const derived = buildApplicationCoverageMatrix();
+  try {
+    const raw = localStorage.getItem(APP_MATRIX_STORAGE_KEY);
+    if (!raw) return derived.values;
+    const saved = JSON.parse(raw);
+    if (!Array.isArray(saved) || saved.length !== derived.rows.length) return derived.values;
+    return saved.map((row, ri) => {
+      if (!Array.isArray(row) || row.length !== derived.cols.length) {
+        return derived.cols.map(() => "pending");
+      }
+      return row.map((cell) => (MATRIX_STATUSES.includes(cell) ? cell : "pending"));
+    });
+  } catch {
+    return derived.values;
+  }
+}
+
+function saveApplicationMatrixValues(values) {
+  localStorage.setItem(APP_MATRIX_STORAGE_KEY, JSON.stringify(values));
+}
+
+function renderApplicationMatrixEditable(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const derived = buildApplicationCoverageMatrix();
+  const values = loadApplicationMatrixValues();
+  const colNames = derived.cols.map((id) => stepById(id).name);
+
+  el.innerHTML = `
+    <p class="matrix-note">Click any cell to cycle status: Pending → In Progress → Completed. Choices are saved in this browser only.</p>
+    <table class="matrix" id="app-matrix-table">
+      <tr><th>QA Type</th>${colNames.map((n) => `<th>${escapeHtml(n)}</th>`).join("")}</tr>
+      ${derived.rows.map((row, ri) => `
+        <tr>
+          <td>${escapeHtml(row)}</td>
+          ${values[ri].map((status, ci) => `
+            <td class="matrix-cell app-matrix-cell ${status}" data-row="${ri}" data-col="${ci}" title="Click to change">${escapeHtml(statusLabel(status))}</td>
+          `).join("")}
+        </tr>`).join("")}
+    </table>`;
+
+  el.querySelectorAll(".app-matrix-cell").forEach((cell) => {
+    cell.addEventListener("click", () => {
+      const ri = +cell.dataset.row;
+      const ci = +cell.dataset.col;
+      const current = loadApplicationMatrixValues();
+      current[ri][ci] = cycleMatrixStatus(current[ri][ci]);
+      saveApplicationMatrixValues(current);
+      cell.className = `matrix-cell app-matrix-cell ${current[ri][ci]}`;
+      cell.textContent = statusLabel(current[ri][ci]);
+    });
+  });
+}

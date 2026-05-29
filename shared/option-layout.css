@@ -24,17 +24,75 @@ body {
   color: var(--disney-text);
 }
 
-.progress {
+.progress,
+.plan-progress {
   height: 8px;
-  background: var(--disney-blue-soft);
+  background: var(--disney-pending-bg);
   border-radius: 4px;
   overflow: hidden;
+  margin: 0.75rem 0;
 }
 
+.plan-row .plan-progress,
+.plan-row .progress {
+  margin: 0.5rem 0;
+}
+
+.plan-progress-fill,
 .progress > div {
   height: 100%;
-  background: linear-gradient(90deg, var(--disney-blue), var(--disney-blue-mid));
   border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+.plan-progress.completed .plan-progress-fill,
+.progress.completed > div {
+  background: var(--disney-completed);
+}
+
+.plan-progress.in-progress .plan-progress-fill,
+.progress.in-progress > div {
+  background: var(--disney-progress);
+}
+
+.plan-progress.pending .plan-progress-fill,
+.progress.pending > div {
+  background: var(--disney-pending);
+}
+
+.donut {
+  --donut-accent: var(--disney-pending);
+}
+
+.donut.completed { --donut-accent: var(--disney-completed); }
+.donut.in-progress { --donut-accent: var(--disney-progress); }
+.donut.pending { --donut-accent: var(--disney-pending); }
+
+.plan-item-bar {
+  margin-top: 0.5rem;
+}
+
+.plan-item-bar .plan-progress {
+  margin: 0;
+  height: 5px;
+}
+
+.coverage-cell-bar {
+  min-width: 120px;
+}
+
+.coverage-cell-bar .plan-progress {
+  margin: 0.35rem 0 0;
+  height: 6px;
+}
+
+.plan-stat-bar {
+  min-width: 160px;
+}
+
+.plan-stat-bar .plan-progress {
+  margin: 0.35rem 0 0;
+  height: 5px;
 }
 
 .example {
