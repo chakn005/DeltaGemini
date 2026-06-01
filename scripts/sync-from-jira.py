@@ -21,11 +21,10 @@ ENV_CANDIDATES = [
     Path(__file__).resolve().parents[2] / "mcp-servers" / "jira-mcp-server" / ".env",
 ]
 
-TEST_PLAN_KEYS = ["RIGHTS-28225", "RIGHTS-27449"]
+TEST_PLAN_KEYS = ["RIGHTS-28225"]
 
 PLAN_STEPS = {
     "RIGHTS-28225": ["md", "fda", "cpm", "xavier"],
-    "RIGHTS-27449": ["falcon", "streaming"],
 }
 
 STATUS_MAP = {
@@ -276,6 +275,9 @@ def strip_hardcoded_metrics(data: dict) -> None:
 def derive_integration_coverage(data: dict) -> None:
     plans = {p["id"]: p for p in data.get("testPlans", [])}
     for integration in data.get("cpdIntegrations", []):
+        plan_key = integration.get("testPlan", "")
+        if plan_key and plan_key not in plans:
+            integration.pop("testPlan", None)
         plan = plans.get(integration.get("testPlan", ""))
         if not plan:
             continue
@@ -348,7 +350,7 @@ def main() -> int:
     strip_hardcoded_metrics(data)
 
     kanban_parts = []
-    plan_labels = {"RIGHTS-28225": "FDA", "RIGHTS-27449": "Falcon"}
+    plan_labels = {"RIGHTS-28225": "FDA"}
     for plan in data["testPlans"]:
         kanban_parts.append(
             build_kanban_from_plan(client, plan["id"], plan_labels.get(plan["id"], plan["id"]), server)

@@ -7,7 +7,8 @@
 | Plan | Jira |
 |------|------|
 | FDA Test Plan | [RIGHTS-28225](https://jira.disney.com/browse/RIGHTS-28225) |
-| Falcon Test Plan | [RIGHTS-27449](https://jira.disney.com/browse/RIGHTS-27449) |
+
+Only **RIGHTS-28225** is synced to the console. The Falcon plan (RIGHTS-27449) is excluded from Jira sync and UI metrics.
 
 ## Refresh data from Jira (recommended)
 
