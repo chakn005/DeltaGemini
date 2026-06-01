@@ -23,3 +23,8 @@
   opacity: 0.85;
   margin-left: 0.35rem;
 }
+.jira-sync-time {
+  color: var(--disney-muted, #64748b);
+  font-size: 0.8em;
+  white-space: nowrap;
+}

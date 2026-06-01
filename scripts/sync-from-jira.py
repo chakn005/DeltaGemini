@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from collections import Counter
 from datetime import datetime, timezone
@@ -16,6 +17,7 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]
 DATA_JSON = ROOT / "shared" / "data.json"
 DATA_JS = ROOT / "shared" / "data.js"
+INDEX_HTML = ROOT / "index.html"
 ENV_CANDIDATES = [
     ROOT / ".env",
     Path(__file__).resolve().parents[2] / "mcp-servers" / "jira-mcp-server" / ".env",
@@ -247,6 +249,19 @@ def write_data_files(data: dict) -> None:
     )
 
 
+def bump_asset_cache_version(data: dict) -> bool:
+    """Update index.html script query params so browsers fetch fresh assets after sync."""
+    version = (data.get("jira") or {}).get("dataVersion")
+    if not version or not INDEX_HTML.exists():
+        return False
+    text = INDEX_HTML.read_text(encoding="utf-8")
+    updated = re.sub(r"\?v=[^\"']+", f"?v={version}", text)
+    if updated == text:
+        return False
+    INDEX_HTML.write_text(updated, encoding="utf-8")
+    return True
+
+
 def plan_qa_status(plan: dict) -> str:
     if plan.get("total") and plan.get("coverage") == 100:
         return "completed"
@@ -436,6 +451,8 @@ def main() -> int:
     data["kanban"] = merge_kanban(kanban_parts)
     data["kanbanSource"] = "jira"
     write_data_files(data)
+    if bump_asset_cache_version(data):
+        print(f"Updated cache version in {INDEX_HTML.name}")
     print(f"\nUpdated {DATA_JSON} and {DATA_JS}")
     return 0
 
