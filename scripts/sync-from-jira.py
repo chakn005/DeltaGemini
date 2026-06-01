@@ -21,11 +21,13 @@ ENV_CANDIDATES = [
     Path(__file__).resolve().parents[2] / "mcp-servers" / "jira-mcp-server" / ".env",
 ]
 
-TEST_PLAN_KEYS = ["RIGHTS-28225"]
+DEFAULT_TEST_PLAN_KEYS = ["RIGHTS-28225", "RIGHTS-28094", "RIGHTS-28328"]
 EXCLUDED_TEST_PLAN_KEYS = ["RIGHTS-27449"]
 
 PLAN_STEPS = {
     "RIGHTS-28225": ["md", "fda", "cpm", "xavier"],
+    "RIGHTS-28094": ["falcon"],
+    "RIGHTS-28328": ["streaming"],
 }
 
 STATUS_MAP = {
@@ -106,7 +108,7 @@ class JiraClient:
             params={"fields": "summary,status,assignee,reporter,updated,created,description,issuetype,labels"},
         )
 
-    def xray_get_paginated(self, path: str, limit: int = 200) -> list:
+    def xray_get_paginated(self, path: str, limit: int = 100) -> list:
         page = 1
         results: list = []
         while True:
@@ -174,14 +176,47 @@ def aggregate_plan_stats(client: JiraClient, plan_key: str) -> dict:
     }
 
 
+def infer_plan_steps(plan_key: str, summary: str) -> list[str]:
+    if plan_key in PLAN_STEPS:
+        return PLAN_STEPS[plan_key]
+    text = (summary or "").lower()
+    if "streaming" in text or "ingest" in text:
+        return ["streaming"]
+    if "falcon" in text:
+        return ["falcon"]
+    if "fda" in text:
+        return ["md", "fda", "cpm", "xavier"]
+    return []
+
+
+def infer_plan_label(plan_key: str, summary: str) -> str:
+    text = (summary or "").lower()
+    if plan_key == "RIGHTS-28225" or "fda" in text:
+        return "FDA"
+    if "streaming" in text or "ingest" in text:
+        return "Streaming"
+    if "falcon" in text:
+        return "Falcon"
+    return plan_key
+
+
+def load_test_plan_keys(data: dict) -> list[str]:
+    jira_cfg = data.get("jira") or {}
+    configured = jira_cfg.get("syncTestPlans")
+    if isinstance(configured, list) and configured:
+        return [key for key in configured if key not in EXCLUDED_TEST_PLAN_KEYS]
+    return [key for key in DEFAULT_TEST_PLAN_KEYS if key not in EXCLUDED_TEST_PLAN_KEYS]
+
+
 def issue_to_plan(issue: dict, stats: dict, server: str) -> dict:
     fields = issue["fields"]
     assignee = (fields.get("assignee") or {}).get("displayName")
     reporter = (fields.get("reporter") or {}).get("displayName")
     key = issue["key"]
+    summary = fields.get("summary") or key
     return {
         "id": key,
-        "name": fields.get("summary") or key,
+        "name": summary,
         "url": f"{server}/browse/{key}",
         "jiraStatus": fields.get("status", {}).get("name", "Unknown"),
         "status": stats["status"],
@@ -199,7 +234,7 @@ def issue_to_plan(issue: dict, stats: dict, server: str) -> dict:
         "assignee": assignee,
         "reporter": reporter,
         "issueType": (fields.get("issuetype") or {}).get("name"),
-        "steps": PLAN_STEPS.get(key, []),
+        "steps": infer_plan_steps(key, summary),
     }
 
 
@@ -273,7 +308,38 @@ def strip_hardcoded_metrics(data: dict) -> None:
     data.pop("kanban", None)
 
 
+def plan_id_for_step(data: dict, step_id: str) -> str | None:
+    for plan in data.get("testPlans", []):
+        if step_id in (plan.get("steps") or []):
+            return plan["id"]
+    return None
+
+
+def apply_integration_test_plan_links(data: dict) -> None:
+    """Preserve explicit links in data.json; only auto-link unassigned handoffs."""
+    plans = {p["id"]: p for p in data.get("testPlans", [])}
+    configured = (data.get("jira") or {}).get("integrationPlans") or {}
+    streaming_plan = plan_id_for_step(data, "streaming")
+    falcon_plan = plan_id_for_step(data, "falcon")
+
+    for integration in data.get("cpdIntegrations", []):
+        integration_id = integration.get("id", "")
+        configured_plan = configured.get(integration_id)
+        if configured_plan and configured_plan in plans:
+            integration["testPlan"] = configured_plan
+        elif integration.get("testPlan") and integration["testPlan"] not in plans:
+            integration.pop("testPlan", None)
+
+        if integration_id == "falcon-streaming" and streaming_plan:
+            integration["testPlan"] = streaming_plan
+        elif integration_id == "fda-falcon" and integration.get("testPlan") in plans:
+            pass
+        elif not integration.get("testPlan") and integration.get("to") == "falcon" and falcon_plan:
+            integration["testPlan"] = falcon_plan
+
+
 def derive_integration_coverage(data: dict) -> None:
+    apply_integration_test_plan_links(data)
     plans = {p["id"]: p for p in data.get("testPlans", [])}
     for integration in data.get("cpdIntegrations", []):
         plan_key = integration.get("testPlan", "")
@@ -324,25 +390,30 @@ def main() -> int:
     print(f"Using credentials from: {source}")
     verify_auth(client, source)
 
+    test_plan_keys = load_test_plan_keys(data)
     plans = []
-    for key in TEST_PLAN_KEYS:
+    plan_labels: dict[str, str] = {}
+    for key in test_plan_keys:
         issue = client.issue(key)
         stats = aggregate_plan_stats(client, key)
         plan = issue_to_plan(issue, stats, server)
         plans.append(plan)
+        plan_labels[key] = infer_plan_label(key, plan["name"])
         print(
-            f"{key}: {plan['name']} | Jira={plan['jiraStatus']} | "
+            f"{key}: {plan['name']} | steps={','.join(plan['steps'])} | Jira={plan['jiraStatus']} | "
             f"coverage={plan['coverage']}% | tests={plan['total']} | "
             f"pass/fail/blocked={plan['pass']}/{plan['fail']}/{plan['blocked']}"
         )
 
     data["testPlans"] = plans
     data["jira"] = {
+        **(data.get("jira") or {}),
         "baseUrl": server,
         "browsePath": "/browse/",
         "lastSynced": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "syncSource": "scripts/sync-from-jira.py",
         "syncRequired": False,
+        "syncTestPlans": test_plan_keys,
         "excludedTestPlans": EXCLUDED_TEST_PLAN_KEYS,
         "dataVersion": datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S"),
     }
@@ -353,10 +424,14 @@ def main() -> int:
     strip_hardcoded_metrics(data)
 
     kanban_parts = []
-    plan_labels = {"RIGHTS-28225": "FDA"}
     for plan in data["testPlans"]:
         kanban_parts.append(
-            build_kanban_from_plan(client, plan["id"], plan_labels.get(plan["id"], plan["id"]), server)
+            build_kanban_from_plan(
+                client,
+                plan["id"],
+                plan_labels.get(plan["id"], infer_plan_label(plan["id"], plan.get("name", ""))),
+                server,
+            )
         )
     data["kanban"] = merge_kanban(kanban_parts)
     data["kanbanSource"] = "jira"
