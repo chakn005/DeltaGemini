@@ -5,15 +5,17 @@
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-05-30T02:30:00Z",
+    "lastSynced": "2026-06-01T15:00:09Z",
     "syncSource": "scripts/sync-from-jira.py",
-    "syncRequired": true,
+    "syncRequired": false,
     "syncTestPlans": [
       "RIGHTS-28225",
       "RIGHTS-28094",
       "RIGHTS-28328"
     ],
-    "excludedTestPlans": ["RIGHTS-27449"],
+    "excludedTestPlans": [
+      "RIGHTS-27449"
+    ],
     "integrationPlans": {
       "rl-md": "RIGHTS-28225",
       "md-fda": "RIGHTS-28225",
@@ -21,7 +23,7 @@
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260530023000"
+    "dataVersion": "20260601150009"
   },
   "flowSteps": [
     {
@@ -139,6 +141,56 @@
         "fda",
         "cpm",
         "xavier"
+      ],
+      "dataSource": "jira"
+    },
+    {
+      "id": "RIGHTS-28094",
+      "name": "DTCFalcon-Capex-Version 26-06-TBD: Falcon Track 2 Delta Gemini Release",
+      "url": "https://jira.disney.com/browse/RIGHTS-28094",
+      "jiraStatus": "In Progress",
+      "status": "in-progress",
+      "coverage": 8,
+      "pass": 22,
+      "fail": 0,
+      "blocked": 0,
+      "inProgress": 0,
+      "pending": 264,
+      "total": 286,
+      "lastRun": "2026-05-29",
+      "updated": "2026-05-29T08:15:56.628-0700",
+      "created": "2026-03-23T06:49:46.039-0700",
+      "owner": "Vijay Gajendra",
+      "assignee": "Vijay Gajendra",
+      "reporter": "Vijay Gajendra",
+      "issueType": "Test Plan",
+      "steps": [
+        "falcon"
+      ],
+      "dataSource": "jira"
+    },
+    {
+      "id": "RIGHTS-28328",
+      "name": "RMS-MD-Unified Acquisition Release 5.0.0 \"26-MM-DD \"",
+      "url": "https://jira.disney.com/browse/RIGHTS-28328",
+      "jiraStatus": "In Progress",
+      "status": "in-progress",
+      "coverage": 18,
+      "pass": 19,
+      "fail": 1,
+      "blocked": 0,
+      "inProgress": 2,
+      "pending": 84,
+      "total": 106,
+      "lastRun": "2026-05-22",
+      "updated": "2026-05-22T07:49:24.418-0700",
+      "created": "2026-04-06T07:58:18.399-0700",
+      "owner": "Anush Kadam",
+      "assignee": "Anush Kadam",
+      "reporter": "Anush Kadam",
+      "issueType": "Test Plan",
+      "steps": [
+        "streaming"
       ],
       "dataSource": "jira"
     }
@@ -389,12 +441,13 @@
       "label": "Avails via Kafka",
       "payload": "Avails and ingest events to Disney Streaming",
       "isNew": true,
-      "owner": "Disney Streaming Ingestion",
+      "owner": "Anush Kadam",
       "validations": [
         "Kafka avails message format",
         "Holdback explosion logic parity",
         "Ingestion status callback (INGESTED / FAILED)"
-      ]
+      ],
+      "testPlan": "RIGHTS-28328"
     }
   ],
   "integrationCoverageMatrix": {
@@ -414,10 +467,595 @@
       "falcon-streaming"
     ]
   },
+  "kanbanSource": "jira",
   "kanban": {
-    "backlog": [],
-    "inTest": [],
-    "blocked": [],
+    "backlog": [
+      {
+        "title": "CPTR-59495",
+        "ticket": "CPTR-59495",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-59495",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61617",
+        "ticket": "CPTR-61617",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61617",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-47822",
+        "ticket": "CPTR-47822",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-47822",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-46695",
+        "ticket": "CPTR-46695",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-46695",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35965",
+        "ticket": "CPTR-35965",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35965",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35722",
+        "ticket": "CPTR-35722",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35722",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35961",
+        "ticket": "CPTR-35961",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35961",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33375",
+        "ticket": "CPTR-33375",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33375",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-36002",
+        "ticket": "CPTR-36002",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-36002",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61585",
+        "ticket": "CPTR-61585",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61585",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-36000",
+        "ticket": "CPTR-36000",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-36000",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-38023",
+        "ticket": "CPTR-38023",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-38023",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61582",
+        "ticket": "CPTR-61582",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61582",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35151",
+        "ticket": "CPTR-35151",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35151",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-69226",
+        "ticket": "CPTR-69226",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69226",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-44541",
+        "ticket": "CPTR-44541",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-44541",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61623",
+        "ticket": "CPTR-61623",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61623",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61622",
+        "ticket": "CPTR-61622",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61622",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61621",
+        "ticket": "CPTR-61621",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61621",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-47770",
+        "ticket": "CPTR-47770",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-47770",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-34625",
+        "ticket": "CPTR-34625",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-34625",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33930",
+        "ticket": "CPTR-33930",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33930",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35316",
+        "ticket": "CPTR-35316",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35316",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-38308",
+        "ticket": "CPTR-38308",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-38308",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33410",
+        "ticket": "CPTR-33410",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33410",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33376",
+        "ticket": "CPTR-33376",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33376",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35675",
+        "ticket": "CPTR-35675",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35675",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35313",
+        "ticket": "CPTR-35313",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35313",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-43969",
+        "ticket": "CPTR-43969",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-43969",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-63656",
+        "ticket": "CPTR-63656",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-63656",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33121",
+        "ticket": "CPTR-33121",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33121",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-59031",
+        "ticket": "CPTR-59031",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-59031",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61517",
+        "ticket": "CPTR-61517",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61517",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-43842",
+        "ticket": "CPTR-43842",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-43842",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-44251",
+        "ticket": "CPTR-44251",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-44251",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-50107",
+        "ticket": "CPTR-50107",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-50107",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32956",
+        "ticket": "CPTR-32956",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-32956",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-35947",
+        "ticket": "CPTR-35947",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-35947",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-61509",
+        "ticket": "CPTR-61509",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61509",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-33925",
+        "ticket": "CPTR-33925",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-33925",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-65728",
+        "ticket": "CPTR-65728",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-65728",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-65613",
+        "ticket": "CPTR-65613",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-65613",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-64285",
+        "ticket": "CPTR-64285",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-64285",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-64284",
+        "ticket": "CPTR-64284",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-64284",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-63425",
+        "ticket": "CPTR-63425",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-63425",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-63156",
+        "ticket": "CPTR-63156",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-63156",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-55421",
+        "ticket": "CPTR-55421",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-55421",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-51077",
+        "ticket": "CPTR-51077",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-51077",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-51076",
+        "ticket": "CPTR-51076",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-51076",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-51068",
+        "ticket": "CPTR-51068",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-51068",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-46708",
+        "ticket": "CPTR-46708",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-46708",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-67983",
+        "ticket": "CPTR-67983",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-67983",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-67753",
+        "ticket": "CPTR-67753",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-67753",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-68330",
+        "ticket": "CPTR-68330",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-68330",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-67974",
+        "ticket": "CPTR-67974",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-67974",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-69537",
+        "ticket": "CPTR-69537",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69537",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-69538",
+        "ticket": "CPTR-69538",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69538",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-69539",
+        "ticket": "CPTR-69539",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69539",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24828",
+        "ticket": "CPTR-24828",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24828",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32461",
+        "ticket": "CPTR-32461",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32461",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32460",
+        "ticket": "CPTR-32460",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32460",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32459",
+        "ticket": "CPTR-32459",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32459",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32426",
+        "ticket": "CPTR-32426",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32426",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32425",
+        "ticket": "CPTR-32425",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32425",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32424",
+        "ticket": "CPTR-32424",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32424",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32423",
+        "ticket": "CPTR-32423",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32423",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-32420",
+        "ticket": "CPTR-32420",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-32420",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24990",
+        "ticket": "CPTR-24990",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24990",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24989",
+        "ticket": "CPTR-24989",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24989",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24988",
+        "ticket": "CPTR-24988",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24988",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24987",
+        "ticket": "CPTR-24987",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24987",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24986",
+        "ticket": "CPTR-24986",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24986",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24985",
+        "ticket": "CPTR-24985",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24985",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24984",
+        "ticket": "CPTR-24984",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24984",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-24154",
+        "ticket": "CPTR-24154",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-24154",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-23046",
+        "ticket": "CPTR-23046",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-23046",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-23044",
+        "ticket": "CPTR-23044",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-23044",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-22273",
+        "ticket": "CPTR-22273",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-22273",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-22272",
+        "ticket": "CPTR-22272",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-22272",
+        "jiraStatus": "TODO"
+      },
+      {
+        "title": "CPTR-20414",
+        "ticket": "CPTR-20414",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-20414",
+        "jiraStatus": "TODO"
+      }
+    ],
+    "inTest": [
+      {
+        "title": "CPTR-71155",
+        "ticket": "CPTR-71155",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71155",
+        "jiraStatus": "EXECUTING"
+      },
+      {
+        "title": "CPTR-71187",
+        "ticket": "CPTR-71187",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71187",
+        "jiraStatus": "EXECUTING"
+      }
+    ],
+    "blocked": [
+      {
+        "title": "CPTR-71186",
+        "ticket": "CPTR-71186",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71186",
+        "jiraStatus": "FAIL"
+      }
+    ],
     "done": [
       {
         "title": "CPTR-69511",
@@ -572,8 +1210,203 @@
         "plan": "FDA",
         "url": "https://jira.disney.com/browse/CPTR-71631",
         "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69379",
+        "ticket": "CPTR-69379",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69379",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69668",
+        "ticket": "CPTR-69668",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69668",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-46352",
+        "ticket": "CPTR-46352",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-46352",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69702",
+        "ticket": "CPTR-69702",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69702",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69738",
+        "ticket": "CPTR-69738",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69738",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-61616",
+        "ticket": "CPTR-61616",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-61616",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-46845",
+        "ticket": "CPTR-46845",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-46845",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69910",
+        "ticket": "CPTR-69910",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-69910",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-34127",
+        "ticket": "CPTR-34127",
+        "plan": "Falcon",
+        "url": "https://jira.disney.com/browse/CPTR-34127",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69882",
+        "ticket": "CPTR-69882",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69882",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69884",
+        "ticket": "CPTR-69884",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69884",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-69887",
+        "ticket": "CPTR-69887",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-69887",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70465",
+        "ticket": "CPTR-70465",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70465",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70468",
+        "ticket": "CPTR-70468",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70468",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70463",
+        "ticket": "CPTR-70463",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70463",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70464",
+        "ticket": "CPTR-70464",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70464",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70466",
+        "ticket": "CPTR-70466",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70466",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70467",
+        "ticket": "CPTR-70467",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70467",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70780",
+        "ticket": "CPTR-70780",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70780",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70813",
+        "ticket": "CPTR-70813",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70813",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70817",
+        "ticket": "CPTR-70817",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70817",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70836",
+        "ticket": "CPTR-70836",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70836",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70837",
+        "ticket": "CPTR-70837",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70837",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70838",
+        "ticket": "CPTR-70838",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70838",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70839",
+        "ticket": "CPTR-70839",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70839",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-70939",
+        "ticket": "CPTR-70939",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-70939",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-71216",
+        "ticket": "CPTR-71216",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71216",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-71319",
+        "ticket": "CPTR-71319",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71319",
+        "jiraStatus": "PASS"
       }
     ]
-  },
-  "kanbanSource": "jira"
+  }
 }
