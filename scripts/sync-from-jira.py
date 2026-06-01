@@ -22,6 +22,7 @@ ENV_CANDIDATES = [
 ]
 
 TEST_PLAN_KEYS = ["RIGHTS-28225"]
+EXCLUDED_TEST_PLAN_KEYS = ["RIGHTS-27449"]
 
 PLAN_STEPS = {
     "RIGHTS-28225": ["md", "fda", "cpm", "xavier"],
@@ -342,6 +343,8 @@ def main() -> int:
         "lastSynced": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "syncSource": "scripts/sync-from-jira.py",
         "syncRequired": False,
+        "excludedTestPlans": EXCLUDED_TEST_PLAN_KEYS,
+        "dataVersion": datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S"),
     }
     for plan in data["testPlans"]:
         plan["dataSource"] = "jira"

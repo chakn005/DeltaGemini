@@ -1,5 +1,25 @@
 /* Metrics derived from Jira-synced testPlans only */
 
+const EXCLUDED_TEST_PLAN_IDS = ["RIGHTS-27449"];
+
+function sanitizeGeminiData() {
+  GEMINI_DATA.testPlans = (GEMINI_DATA.testPlans || []).filter(
+    (plan) => !EXCLUDED_TEST_PLAN_IDS.includes(plan.id)
+  );
+  const allowedPlans = new Set((GEMINI_DATA.testPlans || []).map((plan) => plan.id));
+  (GEMINI_DATA.cpdIntegrations || []).forEach((integration) => {
+    if (integration.testPlan && !allowedPlans.has(integration.testPlan)) {
+      delete integration.testPlan;
+    }
+  });
+  const kanban = GEMINI_DATA.kanban;
+  if (kanban) {
+    Object.keys(kanban).forEach((column) => {
+      kanban[column] = (kanban[column] || []).filter((item) => item.plan !== "Falcon");
+    });
+  }
+}
+
 function planByKey(id) {
   return GEMINI_DATA.testPlans.find((p) => p.id === id);
 }
@@ -140,6 +160,7 @@ function integrationSummaryFromPlans() {
 }
 
 function initJiraMetrics() {
+  sanitizeGeminiData();
   applyDerivedStepStatuses();
   applyDerivedIntegrationMetrics();
   GEMINI_DATA._applicationMatrix = buildApplicationCoverageMatrix();

@@ -25,7 +25,7 @@ function renderIntegrationCards(selectedId) {
         <span class="${st.class}">${escapeHtml(statusLabel(int.status))}</span>
         <span class="cpd-int-cov">${int.coverage}%</span>
       </div>
-      <div class="cpd-int-plan">${jiraLink(int.testPlan, int.testPlan)}</div>
+      ${int.testPlan ? `<div class="cpd-int-plan">${jiraLink(int.testPlan, int.testPlan)}</div>` : ""}
     </div>`;
   }).join("");
 }
@@ -37,9 +37,9 @@ function renderIntegrationDetail(intId) {
   const plan = planByKey(int.testPlan);
   return `<h3>${escapeHtml(integrationLabel(int))} — ${escapeHtml(int.label)}</h3>
     <p class="cpd-int-payload"><strong>Payload:</strong> ${escapeHtml(int.payload)}</p>
-    <p class="cpd-int-owner"><strong>Owner:</strong> ${escapeHtml(plan?.owner || int.owner || "—")} · <strong>Plan:</strong> ${jiraLink(int.testPlan, int.testPlan)}</p>
+    <p class="cpd-int-owner"><strong>Owner:</strong> ${escapeHtml(plan?.owner || int.owner || "—")}${int.testPlan ? ` · <strong>Plan:</strong> ${jiraLink(int.testPlan, int.testPlan)}` : ""}</p>
     <p class="cpd-int-status"><strong>Status:</strong> <span class="${st.class}">${escapeHtml(statusLabel(int.status))}</span> · <strong>Coverage:</strong> ${int.coverage}%</p>
-    <p class="cpd-int-tests"><strong>Jira tests:</strong> Pass ${int.tests.pass} / Fail ${int.tests.fail} / Pending ${plan?.pending ?? 0} / Total ${plan?.total ?? 0}</p>
+    ${plan ? `<p class="cpd-int-tests"><strong>Jira tests:</strong> Pass ${int.tests?.pass ?? 0} / Fail ${int.tests?.fail ?? 0} / Pending ${plan.pending ?? 0} / Total ${plan.total ?? 0}</p>` : ""}
     <h4>Validations</h4>
     <ul>${int.validations.map((v) => `<li>${escapeHtml(v)}</li>`).join("")}</ul>`;
 }
@@ -55,7 +55,7 @@ function renderIntegrationOpsList() {
     return `<div class="cpd-int-ops-row">
       <strong>${escapeHtml(integrationLabel(int))}</strong> — ${escapeHtml(int.label)}
       <span class="${st.class}">${escapeHtml(statusLabel(int.status))} · ${int.coverage}%</span>
-      <div class="cpd-int-ops-sub">${escapeHtml(plan?.owner || "—")} · ${jiraLink(int.testPlan, int.testPlan)}</div>
+      <div class="cpd-int-ops-sub">${escapeHtml(plan?.owner || int.owner || "—")}${int.testPlan ? ` · ${jiraLink(int.testPlan, int.testPlan)}` : ""}</div>
     </div>`;
   }).join("");
 }
