@@ -133,7 +133,11 @@ function planDonutStyle(plan) {
 function applyDerivedIntegrationMetrics() {
   (GEMINI_DATA.cpdIntegrations || []).forEach((integration) => {
     const plan = planByKey(integration.testPlan);
-    if (!plan) return;
+    if (!plan) {
+      integration.status = integration.status || "pending";
+      integration.coverage = integration.coverage ?? 0;
+      return;
+    }
     integration.url = plan.url;
     integration.jiraStatus = plan.jiraStatus;
     integration.assignee = plan.assignee;
