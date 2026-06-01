@@ -12,12 +12,6 @@ function sanitizeGeminiData() {
       delete integration.testPlan;
     }
   });
-  const kanban = GEMINI_DATA.kanban;
-  if (kanban) {
-    Object.keys(kanban).forEach((column) => {
-      kanban[column] = (kanban[column] || []).filter((item) => item.plan !== "Falcon");
-    });
-  }
 }
 
 function planByKey(id) {

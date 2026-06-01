@@ -8,10 +8,22 @@ window.GEMINI_DATA = {
     "browsePath": "/browse/",
     "lastSynced": "2026-05-30T02:30:00Z",
     "syncSource": "scripts/sync-from-jira.py",
-    "syncRequired": false,
+    "syncRequired": true,
+    "syncTestPlans": [
+      "RIGHTS-28225",
+      "RIGHTS-28094",
+      "RIGHTS-28328"
+    ],
     "excludedTestPlans": [
       "RIGHTS-27449"
     ],
+    "integrationPlans": {
+      "rl-md": "RIGHTS-28225",
+      "md-fda": "RIGHTS-28225",
+      "fda-cpm": "RIGHTS-28225",
+      "fda-xavier": "RIGHTS-28225",
+      "fda-falcon": "RIGHTS-28225"
+    },
     "dataVersion": "20260530023000"
   },
   "flowSteps": [
