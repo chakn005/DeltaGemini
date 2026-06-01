@@ -6,9 +6,13 @@ window.GEMINI_DATA = {
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-05-29T07:22:47Z",
+    "lastSynced": "2026-05-30T02:30:00Z",
     "syncSource": "scripts/sync-from-jira.py",
-    "syncRequired": false
+    "syncRequired": false,
+    "excludedTestPlans": [
+      "RIGHTS-27449"
+    ],
+    "dataVersion": "20260530023000"
   },
   "flowSteps": [
     {
