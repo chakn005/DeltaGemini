@@ -16,7 +16,7 @@ function integrationCellClass(status) {
 
 function renderIntegrationCards(selectedId) {
   return GEMINI_DATA.cpdIntegrations.map((int) => {
-    const st = GEMINI_DATA.statusLabels[int.status];
+    const st = GEMINI_DATA.statusLabels[int.status] || GEMINI_DATA.statusLabels.pending;
     const sel = selectedId === int.id ? " cpd-int-card-selected" : "";
     return `<div class="cpd-int-card${sel}" data-int-id="${escapeHtml(int.id)}">
       <div class="cpd-int-route">${escapeHtml(stepById(int.from).name)} → ${escapeHtml(stepById(int.to).name)}</div>
@@ -33,7 +33,7 @@ function renderIntegrationCards(selectedId) {
 function renderIntegrationDetail(intId) {
   const int = integrationById(intId);
   if (!int) return "<p>Select an integration handoff.</p>";
-  const st = GEMINI_DATA.statusLabels[int.status];
+  const st = GEMINI_DATA.statusLabels[int.status] || GEMINI_DATA.statusLabels.pending;
   const plan = planByKey(int.testPlan);
   return `<h3>${escapeHtml(integrationLabel(int))} — ${escapeHtml(int.label)}</h3>
     <p class="cpd-int-payload"><strong>Payload:</strong> ${escapeHtml(int.payload)}</p>
@@ -50,7 +50,7 @@ function renderIntegrationSummaryKpis() {
 
 function renderIntegrationOpsList() {
   return GEMINI_DATA.cpdIntegrations.map((int) => {
-    const st = GEMINI_DATA.statusLabels[int.status];
+    const st = GEMINI_DATA.statusLabels[int.status] || GEMINI_DATA.statusLabels.pending;
     const plan = planByKey(int.testPlan);
     return `<div class="cpd-int-ops-row">
       <strong>${escapeHtml(integrationLabel(int))}</strong> — ${escapeHtml(int.label)}
@@ -78,7 +78,7 @@ function bindIntegrationCards(container, detailEl) {
 
 function renderIntegrationFlowStrip() {
   return GEMINI_DATA.cpdIntegrations.map((int) => {
-    const st = GEMINI_DATA.statusLabels[int.status];
+    const st = GEMINI_DATA.statusLabels[int.status] || GEMINI_DATA.statusLabels.pending;
     return `<div class="cpd-int-strip-item" data-int-id="${escapeHtml(int.id)}">
       <span class="cpd-int-strip-route">${escapeHtml(stepById(int.from).name)} → ${escapeHtml(stepById(int.to).name)}</span>
       <span class="cpd-int-strip-label">${escapeHtml(int.label)}</span>
