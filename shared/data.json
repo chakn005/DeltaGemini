@@ -5,7 +5,7 @@
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-01T15:02:08Z",
+    "lastSynced": "2026-06-01T15:40:28Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -23,7 +23,7 @@
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260601150208"
+    "dataVersion": "20260601154028"
   },
   "flowSteps": [
     {
@@ -151,11 +151,11 @@
       "jiraStatus": "In Progress",
       "status": "in-progress",
       "coverage": 8,
-      "pass": 22,
+      "pass": 23,
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
-      "pending": 264,
+      "pending": 263,
       "total": 286,
       "lastRun": "2026-05-29",
       "updated": "2026-05-29T08:15:56.628-0700",
