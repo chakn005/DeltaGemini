@@ -6,7 +6,7 @@ window.GEMINI_DATA = {
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-02T07:01:47Z",
+    "lastSynced": "2026-06-02T07:05:31Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -24,7 +24,7 @@ window.GEMINI_DATA = {
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260602070147"
+    "dataVersion": "20260602070531"
   },
   "flowSteps": [
     {
