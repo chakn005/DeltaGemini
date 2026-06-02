@@ -1,12 +1,9 @@
 name: Jira Auto Sync
 
-# Disney Jira (jira.disney.com) is not reachable from GitHub-hosted runners (SSO/VPN).
-# This workflow must run on a self-hosted runner on your Mac while connected to VPN.
-# See docs/SELF-HOSTED-RUNNER.md for setup, or use: ./scripts/local-auto-sync.sh
+# Manual check only. Disney Jira is not reachable from GitHub cloud runners.
+# For automatic updates use ./scripts/install-macos-sync-agent.sh (VPN) or a self-hosted runner.
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -18,10 +15,33 @@ permissions:
 
 jobs:
   sync:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Preflight — can this runner reach Disney Jira?
+        env:
+          JIRA_SERVER: ${{ secrets.JIRA_SERVER }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+        run: |
+          SERVER="${JIRA_SERVER:-https://jira.disney.com}"
+          SERVER="${SERVER%/}"
+          if [ -z "$JIRA_TOKEN" ]; then
+            echo "::error::JIRA_TOKEN secret is not set. Add it under Settings → Secrets → Actions."
+            exit 1
+          fi
+          BODY_FILE="$(mktemp)"
+          HTTP_CODE=$(curl -sS -o "$BODY_FILE" -w "%{http_code}" \
+            -H "Authorization: Bearer $JIRA_TOKEN" \
+            -H "Accept: application/json" \
+            "$SERVER/rest/api/2/myself" || echo "000")
+          if [ "$HTTP_CODE" = "200" ] && head -c 1 "$BODY_FILE" | grep -q '{'; then
+            echo "Jira API is reachable from this runner."
+            exit 0
+          fi
+          echo "::error::Disney Jira is not reachable from GitHub cloud (HTTP $HTTP_CODE). Jobs stay queued only when using self-hosted without a runner online. Use ./scripts/local-auto-sync.sh on VPN or install a self-hosted runner — see docs/SELF-HOSTED-RUNNER.md"
+          exit 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,13 +49,13 @@ jobs:
           python-version: "3.12"
 
       - name: Install sync dependencies
-        run: python3 -m pip install -r requirements-sync.txt
+        run: pip install -r requirements-sync.txt
 
       - name: Sync from Jira
         env:
           JIRA_SERVER: ${{ secrets.JIRA_SERVER }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
-        run: python3 scripts/sync-from-jira.py
+        run: python scripts/sync-from-jira.py
 
       - name: Commit and push synced data
         run: |

@@ -16,15 +16,26 @@
 
 The console refreshes test plan metrics automatically via GitHub Actions and can also sync from your Mac when on VPN.
 
-### GitHub Actions (self-hosted runner required)
+### Auto-sync (recommended: Mac + VPN)
 
-Disney Jira **does not work** from GitHub’s cloud runners (SSO/VPN), even with a valid `JIRA_TOKEN`. Your token is fine — the network path is not.
+Disney Jira **does not work** from GitHub cloud runners. A workflow stuck in **Queued** means it is waiting for a self-hosted runner that is not online.
 
-1. Add secrets: [Settings → Secrets → Actions](https://github.com/chakn005/DeltaGemini/settings/secrets/actions) — **`JIRA_TOKEN`** (required), **`JIRA_SERVER`** (optional).
-2. Install a **self-hosted runner** on your Mac (VPN): [docs/SELF-HOSTED-RUNNER.md](docs/SELF-HOSTED-RUNNER.md)
-3. Workflow [`.github/workflows/jira-sync.yml`](.github/workflows/jira-sync.yml) runs **every 6 hours** on that runner, or via **Run workflow** in Actions.
+**Easiest — macOS agent (every 6 hours on VPN):**
 
-If the job fails with “SSO redirect” on `ubuntu-latest`, that is expected — switch to self-hosted (step 2).
+```bash
+cd POC/delta-gemini-console
+./scripts/install-macos-sync-agent.sh
+```
+
+**Or one-off / manual:**
+
+```bash
+./scripts/local-auto-sync.sh
+```
+
+**Optional — GitHub self-hosted runner:** [docs/SELF-HOSTED-RUNNER.md](docs/SELF-HOSTED-RUNNER.md) (workflow `jira-sync-self-hosted.yml`)
+
+**Manual cloud test (will fail fast with a clear message):** Actions → **Jira Auto Sync** → Run workflow
 
 ### Manual / local sync
 
