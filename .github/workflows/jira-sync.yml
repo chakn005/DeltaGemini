@@ -1,8 +1,11 @@
 name: Jira Auto Sync
 
+# Disney Jira (jira.disney.com) is not reachable from GitHub-hosted runners (SSO/VPN).
+# This workflow must run on a self-hosted runner on your Mac while connected to VPN.
+# See docs/SELF-HOSTED-RUNNER.md for setup, or use: ./scripts/local-auto-sync.sh
+
 on:
   schedule:
-    # Every 6 hours (UTC)
     - cron: "0 */6 * * *"
   workflow_dispatch:
 
@@ -15,7 +18,7 @@ permissions:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,17 +27,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements-sync.txt
 
       - name: Install sync dependencies
-        run: pip install -r requirements-sync.txt
+        run: python3 -m pip install -r requirements-sync.txt
 
       - name: Sync from Jira
         env:
           JIRA_SERVER: ${{ secrets.JIRA_SERVER }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
-        run: python scripts/sync-from-jira.py
+        run: python3 scripts/sync-from-jira.py
 
       - name: Commit and push synced data
         run: |

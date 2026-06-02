@@ -16,16 +16,15 @@
 
 The console refreshes test plan metrics automatically via GitHub Actions and can also sync from your Mac when on VPN.
 
-### GitHub Actions (recommended for the live site)
+### GitHub Actions (self-hosted runner required)
 
-1. Open [DeltaGemini → Settings → Secrets and variables → Actions](https://github.com/chakn005/DeltaGemini/settings/secrets/actions).
-2. Add repository secrets:
-   - **`JIRA_TOKEN`** — Jira Personal Access Token ([create at jira.disney.com](https://jira.disney.com) → Profile → Personal Access Tokens)
-   - **`JIRA_SERVER`** *(optional)* — defaults to `https://jira.disney.com`
-3. The workflow [`.github/workflows/jira-sync.yml`](.github/workflows/jira-sync.yml) runs **every 6 hours** and on manual dispatch (Actions → *Jira Auto Sync* → *Run workflow*).
-4. When Jira data changes, the workflow commits `shared/data.json`, `shared/data.js`, and bumps cache keys in `index.html`, then pushes to `main` (which redeploys GitHub Pages).
+Disney Jira **does not work** from GitHub’s cloud runners (SSO/VPN), even with a valid `JIRA_TOKEN`. Your token is fine — the network path is not.
 
-> **Note:** Disney Jira may require corporate network access. If the scheduled GitHub Action fails with an SSO/auth error, use a [self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners) on VPN, or the local auto-sync option below.
+1. Add secrets: [Settings → Secrets → Actions](https://github.com/chakn005/DeltaGemini/settings/secrets/actions) — **`JIRA_TOKEN`** (required), **`JIRA_SERVER`** (optional).
+2. Install a **self-hosted runner** on your Mac (VPN): [docs/SELF-HOSTED-RUNNER.md](docs/SELF-HOSTED-RUNNER.md)
+3. Workflow [`.github/workflows/jira-sync.yml`](.github/workflows/jira-sync.yml) runs **every 6 hours** on that runner, or via **Run workflow** in Actions.
+
+If the job fails with “SSO redirect” on `ubuntu-latest`, that is expected — switch to self-hosted (step 2).
 
 ### Manual / local sync
 
