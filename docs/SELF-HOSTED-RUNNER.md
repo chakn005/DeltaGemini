@@ -2,7 +2,20 @@
 
 Disney Jira (`https://jira.disney.com`) blocks GitHub **cloud** runners (you get SSO redirect / auth errors even with a valid `JIRA_TOKEN`).
 
-Your token works on your Mac with VPN — use a **self-hosted runner** on that Mac so scheduled sync can reach Jira.
+Your token works on your Mac with VPN.
+
+## Why a workflow shows "Queued"
+
+**Queued** means GitHub is waiting for a **self-hosted runner** that is not online. Cloud workflows (`ubuntu-latest`) start immediately; `runs-on: self-hosted` waits until your Mac runner is connected.
+
+**Easier option (no runner):** use the macOS sync agent:
+
+```bash
+cd POC/delta-gemini-console
+./scripts/install-macos-sync-agent.sh
+```
+
+That syncs every 6 hours while your Mac is on VPN.
 
 ## One-time setup
 
