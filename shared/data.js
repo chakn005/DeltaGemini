@@ -6,7 +6,7 @@ window.GEMINI_DATA = {
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-01T15:40:28Z",
+    "lastSynced": "2026-06-02T06:37:07Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -24,7 +24,7 @@ window.GEMINI_DATA = {
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260601154028"
+    "dataVersion": "20260602063707"
   },
   "flowSteps": [
     {
@@ -156,10 +156,10 @@ window.GEMINI_DATA = {
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
-      "pending": 263,
-      "total": 286,
-      "lastRun": "2026-05-29",
-      "updated": "2026-05-29T08:15:56.628-0700",
+      "pending": 264,
+      "total": 287,
+      "lastRun": "2026-06-01",
+      "updated": "2026-06-01T09:33:09.622-0700",
       "created": "2026-03-23T06:49:46.039-0700",
       "owner": "Vijay Gajendra",
       "assignee": "Vijay Gajendra",
@@ -176,11 +176,11 @@ window.GEMINI_DATA = {
       "url": "https://jira.disney.com/browse/RIGHTS-28328",
       "jiraStatus": "In Progress",
       "status": "in-progress",
-      "coverage": 18,
-      "pass": 19,
+      "coverage": 19,
+      "pass": 20,
       "fail": 1,
       "blocked": 0,
-      "inProgress": 2,
+      "inProgress": 1,
       "pending": 84,
       "total": 106,
       "lastRun": "2026-05-22",
@@ -1034,13 +1034,6 @@ window.GEMINI_DATA = {
     ],
     "inTest": [
       {
-        "title": "CPTR-71155",
-        "ticket": "CPTR-71155",
-        "plan": "RIGHTS-28328",
-        "url": "https://jira.disney.com/browse/CPTR-71155",
-        "jiraStatus": "EXECUTING"
-      },
-      {
         "title": "CPTR-71187",
         "ticket": "CPTR-71187",
         "plan": "RIGHTS-28328",
@@ -1392,6 +1385,13 @@ window.GEMINI_DATA = {
         "ticket": "CPTR-70939",
         "plan": "RIGHTS-28328",
         "url": "https://jira.disney.com/browse/CPTR-70939",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-71155",
+        "ticket": "CPTR-71155",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-71155",
         "jiraStatus": "PASS"
       },
       {

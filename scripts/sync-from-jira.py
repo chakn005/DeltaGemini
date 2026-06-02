@@ -380,10 +380,17 @@ def verify_auth(client: JiraClient, source: str) -> None:
     try:
         client._get("/rest/api/2/myself")
     except RuntimeError as exc:
+        detail = str(exc)
+        if "non-JSON" in detail or "SSO" in detail:
+            raise RuntimeError(
+                f"Jira is not reachable from this network (SSO redirect) using {source}. "
+                "Disney Jira requires corporate VPN. GitHub cloud runners cannot sync; use a "
+                "self-hosted Actions runner on your Mac (see docs/SELF-HOSTED-RUNNER.md) or run "
+                "./scripts/local-auto-sync.sh while on VPN."
+            ) from exc
         raise RuntimeError(
             f"Jira authentication failed using {source}. "
-            "Update JIRA_TOKEN in POC/delta-gemini-console/.env or "
-            "mcp-servers/jira-mcp-server/.env, or export JIRA_TOKEN in your shell. "
+            "Check JIRA_TOKEN in repository secrets or POC/delta-gemini-console/.env. "
             f"Original error: {exc}"
         ) from exc
 
