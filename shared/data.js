@@ -6,7 +6,7 @@ window.GEMINI_DATA = {
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-11T06:15:06Z",
+    "lastSynced": "2026-06-15T06:39:05Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -24,7 +24,7 @@ window.GEMINI_DATA = {
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260611061506"
+    "dataVersion": "20260615063905"
   },
   "flowSteps": [
     {
@@ -152,14 +152,14 @@ window.GEMINI_DATA = {
       "jiraStatus": "In Progress",
       "status": "in-progress",
       "coverage": 10,
-      "pass": 29,
+      "pass": 30,
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
       "pending": 262,
-      "total": 291,
-      "lastRun": "2026-06-10",
-      "updated": "2026-06-10T04:38:33.778-0700",
+      "total": 292,
+      "lastRun": "2026-06-11",
+      "updated": "2026-06-11T11:42:39.067-0700",
       "created": "2026-03-23T06:49:46.039-0700",
       "owner": "Vijay Gajendra",
       "assignee": "Vijay Gajendra",
@@ -183,8 +183,8 @@ window.GEMINI_DATA = {
       "inProgress": 0,
       "pending": 84,
       "total": 107,
-      "lastRun": "2026-06-09",
-      "updated": "2026-06-09T09:48:39.042-0700",
+      "lastRun": "2026-06-11",
+      "updated": "2026-06-11T06:15:44.376-0700",
       "created": "2026-04-06T07:58:18.399-0700",
       "owner": "Anush Kadam",
       "assignee": "Anush Kadam",
