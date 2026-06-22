@@ -6,7 +6,7 @@ window.GEMINI_DATA = {
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-15T14:35:51Z",
+    "lastSynced": "2026-06-22T13:36:47Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -24,7 +24,7 @@ window.GEMINI_DATA = {
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260615143551"
+    "dataVersion": "20260622133647"
   },
   "flowSteps": [
     {
@@ -122,16 +122,16 @@ window.GEMINI_DATA = {
       "name": "FDA - Test Plan - 26-06-DD FDA Hulu as a Licensee (1st Party Unified Acquisition) Release 8.0.0",
       "url": "https://jira.disney.com/browse/RIGHTS-28225",
       "jiraStatus": "In Progress",
-      "status": "completed",
-      "coverage": 100,
-      "pass": 23,
-      "fail": 0,
+      "status": "in-progress",
+      "coverage": 97,
+      "pass": 28,
+      "fail": 1,
       "blocked": 0,
       "inProgress": 0,
       "pending": 0,
-      "total": 23,
-      "lastRun": "2026-06-05",
-      "updated": "2026-06-05T01:56:55.313-0700",
+      "total": 29,
+      "lastRun": "2026-06-22",
+      "updated": "2026-06-22T02:15:39.455-0700",
       "created": "2026-03-31T03:57:38.180-0700",
       "owner": "Smrithi Ravindranath",
       "assignee": "Smrithi Ravindranath",
@@ -151,15 +151,15 @@ window.GEMINI_DATA = {
       "url": "https://jira.disney.com/browse/RIGHTS-28094",
       "jiraStatus": "In Progress",
       "status": "in-progress",
-      "coverage": 11,
-      "pass": 32,
+      "coverage": 12,
+      "pass": 37,
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
       "pending": 262,
-      "total": 294,
-      "lastRun": "2026-06-15",
-      "updated": "2026-06-15T06:28:29.183-0700",
+      "total": 299,
+      "lastRun": "2026-06-19",
+      "updated": "2026-06-19T10:44:57.396-0700",
       "created": "2026-03-23T06:49:46.039-0700",
       "owner": "Vijay Gajendra",
       "assignee": "Vijay Gajendra",
@@ -176,15 +176,15 @@ window.GEMINI_DATA = {
       "url": "https://jira.disney.com/browse/RIGHTS-28328",
       "jiraStatus": "In Progress",
       "status": "in-progress",
-      "coverage": 21,
-      "pass": 23,
+      "coverage": 26,
+      "pass": 30,
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
-      "pending": 88,
-      "total": 111,
-      "lastRun": "2026-06-15",
-      "updated": "2026-06-15T07:26:30.559-0700",
+      "pending": 84,
+      "total": 114,
+      "lastRun": "2026-06-17",
+      "updated": "2026-06-17T07:52:08.632-0700",
       "created": "2026-04-06T07:58:18.399-0700",
       "owner": "Anush Kadam",
       "assignee": "Anush Kadam",
@@ -1033,7 +1033,15 @@ window.GEMINI_DATA = {
       }
     ],
     "inTest": [],
-    "blocked": [],
+    "blocked": [
+      {
+        "title": "CPTR-62850",
+        "ticket": "CPTR-62850",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-62850",
+        "jiraStatus": "FAIL"
+      }
+    ],
     "done": [
       {
         "title": "CPTR-69511",
@@ -1194,6 +1202,41 @@ window.GEMINI_DATA = {
         "ticket": "CPTR-72192",
         "plan": "FDA",
         "url": "https://jira.disney.com/browse/CPTR-72192",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72763",
+        "ticket": "CPTR-72763",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-72763",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-62840",
+        "ticket": "CPTR-62840",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-62840",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-62841",
+        "ticket": "CPTR-62841",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-62841",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-62875",
+        "ticket": "CPTR-62875",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-62875",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-62886",
+        "ticket": "CPTR-62886",
+        "plan": "FDA",
+        "url": "https://jira.disney.com/browse/CPTR-62886",
         "jiraStatus": "PASS"
       },
       {
@@ -1418,6 +1461,55 @@ window.GEMINI_DATA = {
         "ticket": "CPTR-72556",
         "plan": "RIGHTS-28328",
         "url": "https://jira.disney.com/browse/CPTR-72556",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72680",
+        "ticket": "CPTR-72680",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72680",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72681",
+        "ticket": "CPTR-72681",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72681",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72682",
+        "ticket": "CPTR-72682",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72682",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72685",
+        "ticket": "CPTR-72685",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72685",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72764",
+        "ticket": "CPTR-72764",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72764",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72765",
+        "ticket": "CPTR-72765",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72765",
+        "jiraStatus": "PASS"
+      },
+      {
+        "title": "CPTR-72767",
+        "ticket": "CPTR-72767",
+        "plan": "RIGHTS-28328",
+        "url": "https://jira.disney.com/browse/CPTR-72767",
         "jiraStatus": "PASS"
       }
     ]
