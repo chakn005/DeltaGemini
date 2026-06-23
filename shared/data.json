@@ -5,7 +5,7 @@
   "jira": {
     "baseUrl": "https://jira.disney.com",
     "browsePath": "/browse/",
-    "lastSynced": "2026-06-22T13:36:47Z",
+    "lastSynced": "2026-06-23T06:39:25Z",
     "syncSource": "scripts/sync-from-jira.py",
     "syncRequired": false,
     "syncTestPlans": [
@@ -23,7 +23,7 @@
       "fda-xavier": "RIGHTS-28225",
       "fda-falcon": "RIGHTS-28225"
     },
-    "dataVersion": "20260622133647"
+    "dataVersion": "20260623063925"
   },
   "flowSteps": [
     {
@@ -150,15 +150,15 @@
       "url": "https://jira.disney.com/browse/RIGHTS-28094",
       "jiraStatus": "In Progress",
       "status": "in-progress",
-      "coverage": 12,
-      "pass": 37,
+      "coverage": 13,
+      "pass": 38,
       "fail": 0,
       "blocked": 0,
       "inProgress": 0,
       "pending": 262,
-      "total": 299,
-      "lastRun": "2026-06-19",
-      "updated": "2026-06-19T10:44:57.396-0700",
+      "total": 300,
+      "lastRun": "2026-06-22",
+      "updated": "2026-06-22T06:37:19.042-0700",
       "created": "2026-03-23T06:49:46.039-0700",
       "owner": "Vijay Gajendra",
       "assignee": "Vijay Gajendra",
